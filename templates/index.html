@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Task Manager</title>
+
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial;
+            display: flex;
+            background: #0f172a;
+            color: white;
+        }
+
+        /* LEFT SIDEBAR */
+        .sidebar {
+            width: 250px;
+            height: 100vh;
+            background: #1e293b;
+            padding: 15px;
+            overflow-y: auto;
+        }
+
+        .task-item {
+            background: #334155;
+            padding: 10px;
+            margin: 8px 0;
+            border-radius: 6px;
+        }
+
+        /* CENTER */
+        .content {
+            flex: 1;
+            padding: 20px;
+        }
+
+        .box {
+            background: #1e293b;
+            padding: 20px;
+            border-radius: 10px;
+            width: 400px;
+            margin-bottom: 15px;
+        }
+
+        input, textarea {
+            width: 90%;
+            padding: 10px;
+            margin: 5px;
+            border-radius: 5px;
+            border: none;
+        }
+
+        button {
+            padding: 10px;
+            background: #22c55e;
+            border: none;
+            color: white;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .done {
+            text-decoration: line-through;
+            color: gray;
+        }
+
+        /* RIGHT SIDEBAR 🔥 */
+        .rightbar {
+            width: 300px;
+            height: 100vh;
+            background: #1e293b;
+            padding: 15px;
+        }
+
+        .rightbar ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .rightbar li {
+            background: #334155;
+            margin: 5px 0;
+            padding: 8px;
+            border-radius: 5px;
+            display: flex;
+            justify-content: space-between;
+        }
+    </style>
+</head>
+
+<body>
+
+<!-- 🔵 LEFT -->
+<div class="sidebar">
+    <h2>📌 Tasks</h2>
+
+    {% for task in tasks %}
+        <div class="task-item">
+            <strong class="{% if task.completed %}done{% endif %}">
+                {{ task.title }}
+            </strong>
+        </div>
+    {% endfor %}
+</div>
+
+<!-- 🟢 CENTER -->
+<div class="content">
+
+    <h1>📅 Task Manager</h1>
+
+    <!-- Add Task -->
+    <div class="box">
+        <form method="POST">
+            {% csrf_token %}
+            <input type="text" name="title" placeholder="Task name" required>
+            <input type="number" name="duration" placeholder="Time in minutes" required>
+            <textarea name="rules" placeholder="Rules"></textarea>
+            <button type="submit">Add Task</button>
+        </form>
+    </div>
+
+    <hr>
+
+    <!-- Tasks -->
+    {% for task in tasks %}
+    <div class="box">
+        
+        <h3 class="{% if task.completed %}done{% endif %}">
+            {{ task.title }}
+        </h3>
+
+        <p>⏳ {{ task.duration }} mins</p>
+        <p>📌 {{ task.rules }}</p>
+
+        <p id="timer{{ task.id }}">00:00</p>
+
+        <div style="background:#475569; height:10px; border-radius:5px;">
+            <div id="bar{{ task.id }}" 
+                 style="background:#22c55e; height:10px; width:100%; border-radius:5px;">
+            </div>
+        </div>
+
+        <br>
+
+        <button onclick="startTimer(parseInt('{{ task.duration }}'), 'timer{{ task.id }}')">▶ Start</button>
+        <button onclick="pauseTimer('timer{{ task.id }}')">⏸ Pause</button>
+
+        <br><br>
+
+        {% if not task.completed %}
+            <a href="{% url 'complete' task.id %}">
+                <button>✔ Done</button>
+            </a>
+        {% else %}
+            <p>✅ Completed</p>
+        {% endif %}
+
+    </div>
+    {% endfor %}
+
+</div>
+
+<!-- 🟣 RIGHT SIDEBAR -->
+<div class="rightbar">
+    <h2>📝 Today Plan</h2>
+
+    <input type="text" id="planInput" placeholder="Add point...">
+    <button onclick="addPlan()">➕ Add</button>
+
+    <ul id="planList"></ul>
+</div>
+
+<!-- 🔥 SCRIPT -->
+<script>
+let timers = {};
+
+function startTimer(minutes, elementId) {
+    let timer = minutes * 60;
+    let total = timer;
+
+    let element = document.getElementById(elementId);
+    let bar = document.getElementById("bar" + elementId.replace("timer",""));
+
+    if (timers[elementId]) return;
+
+    timers[elementId] = setInterval(function () {
+
+        let min = Math.floor(timer / 60);
+        let sec = timer % 60;
+
+        element.textContent =
+            (min < 10 ? "0" + min : min) + ":" +
+            (sec < 10 ? "0" + sec : sec);
+
+        let percent = (timer / total) * 100;
+        if (bar) bar.style.width = percent + "%";
+
+        timer--;
+
+        if (timer < 0) {
+            clearInterval(timers[elementId]);
+            element.textContent = "⏰ Time Over!";
+            if (bar) bar.style.width = "0%";
+        }
+
+    }, 1000);
+}
+
+function pauseTimer(elementId) {
+    clearInterval(timers[elementId]);
+    delete timers[elementId];
+}
+
+/* ✅ TODAY PLAN (CHECKLIST) */
+window.onload = function() {
+    let data = JSON.parse(localStorage.getItem("plans")) || [];
+    data.forEach(item => createPlan(item));
+};
+
+function addPlan() {
+    let input = document.getElementById("planInput");
+    let value = input.value;
+
+    if (!value) return;
+
+    createPlan(value);
+
+    let data = JSON.parse(localStorage.getItem("plans")) || [];
+    data.push(value);
+    localStorage.setItem("plans", JSON.stringify(data));
+
+    input.value = "";
+}
+
+function createPlan(text) {
+    let li = document.createElement("li");
+
+    li.innerHTML = `
+        <span onclick="this.style.textDecoration='line-through'">${text}</span>
+        <button onclick="this.parentElement.remove()">❌</button>
+    `;
+
+    document.getElementById("planList").appendChild(li);
+}
+</script>
+
+</body>
+</html>
