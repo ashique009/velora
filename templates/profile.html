@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Velora - User Profile</title>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        :root {
+            --bg-gradient: radial-gradient(circle at top, #1e0b36 0%, #0c0418 60%, #05010a 100%);
+            --bg-color: #0c0418;
+            --card-bg: rgba(28, 12, 59, 0.45);
+            --card-border: rgba(168, 85, 247, 0.18);
+            --card-border-hover: rgba(168, 85, 247, 0.35);
+            --text-main: #f3f4f6;
+            --text-muted: #a78bfa;
+            --color-primary: #a855f7;
+            --color-primary-rgb: 168, 85, 247;
+            --color-primary-hover: #c084fc;
+            --glow-shadow: 0 0 20px rgba(168, 85, 247, 0.4);
+            --shadow-main: 0 8px 32px 0 rgba(0, 0, 0, 0.5);
+            --button-success: #22c55e;
+            --button-danger: #ef4444;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background: var(--bg-gradient);
+            color: var(--text-main);
+            font-family: 'Inter', sans-serif;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        .glow-blob {
+            position: absolute;
+            width: 450px;
+            height: 450px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(var(--color-primary-rgb), 0.15) 0%, rgba(0,0,0,0) 70%);
+            filter: blur(40px);
+            z-index: -1;
+            pointer-events: none;
+            animation: float-slow 18s infinite alternate ease-in-out;
+        }
+        .glow-blob-1 { top: 10%; left: -10%; }
+        .glow-blob-2 { bottom: 10%; right: -10%; animation-delay: -6s; }
+
+        @keyframes float-slow {
+            0% { transform: translate(0, 0) scale(1); }
+            50% { transform: translate(30px, -50px) scale(1.1); }
+            100% { transform: translate(-20px, 30px) scale(0.9); }
+        }
+
+        .header-bar {
+            height: 65px;
+            background: rgba(20, 8, 43, 0.7);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--card-border);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 24px;
+            z-index: 100;
+        }
+        .logo-section {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            text-decoration: none;
+            color: inherit;
+        }
+        .logo-section i {
+            color: var(--color-primary);
+            filter: drop-shadow(0 0 8px var(--color-primary));
+        }
+        .logo-section h1 {
+            font-family: 'Outfit', sans-serif;
+            font-size: 1.35rem;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+        }
+
+        .container {
+            max-width: 900px;
+            width: 100%;
+            margin: 40px auto;
+            padding: 0 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 30px;
+            z-index: 10;
+        }
+
+        .glass-card {
+            background: var(--card-bg);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid var(--card-border);
+            border-radius: 16px;
+            padding: 24px;
+            box-shadow: var(--shadow-main);
+        }
+
+        .profile-hero {
+            display: flex;
+            align-items: center;
+            gap: 24px;
+        }
+        .avatar-container {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            border: 3px solid var(--color-primary);
+            box-shadow: var(--glow-shadow);
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(var(--color-primary-rgb), 0.1);
+        }
+        .avatar-container img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        .avatar-placeholder {
+            font-size: 2.5rem;
+            font-family: 'Outfit', sans-serif;
+            font-weight: 700;
+            color: var(--color-primary-hover);
+            text-transform: uppercase;
+        }
+
+        .profile-details h2 {
+            font-family: 'Outfit', sans-serif;
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin-bottom: 4px;
+        }
+        .profile-details p {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            margin-bottom: 6px;
+        }
+        .join-date {
+            font-size: 0.8rem;
+            color: rgba(255,255,255,0.4);
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 16px;
+        }
+        .stat-card {
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 20px 10px;
+        }
+        .stat-card i {
+            margin-bottom: 8px;
+            color: var(--color-primary-hover);
+        }
+        .stat-card .val {
+            font-size: 1.6rem;
+            font-weight: 700;
+            font-family: 'Outfit', sans-serif;
+            margin-bottom: 4px;
+        }
+        .stat-card .lbl {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+        }
+
+        .section-title {
+            font-family: 'Outfit', sans-serif;
+            font-size: 1.25rem;
+            font-weight: 700;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            border-bottom: 1px solid rgba(255,255,255,0.08);
+            padding-bottom: 8px;
+        }
+
+        .badges-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 16px;
+        }
+        .badge-card {
+            background: rgba(0,0,0,0.25);
+            border: 1px solid var(--card-border);
+            border-radius: 12px;
+            padding: 16px;
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+        .badge-icon {
+            width: 44px;
+            height: 44px;
+            border-radius: 10px;
+            background: rgba(var(--color-primary-rgb), 0.15);
+            border: 1px solid rgba(var(--color-primary-rgb), 0.35);
+            color: var(--color-primary-hover);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 0 10px rgba(var(--color-primary-rgb), 0.2);
+        }
+        .badge-text h4 {
+            font-family: 'Outfit', sans-serif;
+            font-size: 0.95rem;
+            font-weight: 600;
+            margin-bottom: 2px;
+        }
+        .badge-text p {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+        }
+
+        .export-section {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        .export-buttons-row {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+        .btn {
+            padding: 10px 18px;
+            border-radius: 10px;
+            font-weight: 500;
+            font-size: 0.85rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            transition: all 0.2s;
+            text-decoration: none;
+        }
+        .btn-primary {
+            background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-hover) 100%);
+            color: white;
+            border: none;
+            box-shadow: var(--glow-shadow);
+        }
+        .btn-primary:hover {
+            opacity: 0.95;
+            transform: translateY(-1px);
+        }
+        .btn-secondary {
+            background: rgba(255,255,255,0.05);
+            border: 1px solid var(--card-border);
+            color: var(--text-main);
+        }
+        .btn-secondary:hover {
+            background: rgba(255,255,255,0.1);
+        }
+
+        @media (max-width: 768px) {
+            .profile-hero {
+                flex-direction: column;
+                text-align: center;
+            }
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            .badges-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 600px) {
+            .nav-btn-text {
+                display: none;
+            }
+            .header-bar {
+                padding: 0 12px;
+            }
+            .header-nav-group {
+                gap: 6px !important;
+            }
+            .header-nav-group .btn {
+                padding: 8px 12px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="glow-blob glow-blob-1"></div>
+    <div class="glow-blob glow-blob-2"></div>
+
+    <!-- Header bar -->
+    <div class="header-bar">
+        <a href="{% url 'home' %}" class="logo-section">
+            <svg class="logo-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="width: 22px; height: 22px; color: var(--color-primary); filter: drop-shadow(0 0 8px var(--color-primary));">
+                <path d="M4 4.5L12 20L20 4.5" />
+            </svg>
+            <h1>Velora</h1>
+        </a>
+        <div class="header-nav-group" style="display: flex; gap: 10px; align-items: center;">
+            <a href="{% url 'home' %}" class="btn btn-secondary" title="Dashboard">
+                <i data-lucide="layout-dashboard"></i> <span class="nav-btn-text">Dashboard</span>
+            </a>
+            <a href="{% url 'profile' %}" class="btn btn-primary" title="Profile">
+                <i data-lucide="user"></i> <span class="nav-btn-text">Profile</span>
+            </a>
+            <a href="{% url 'settings' %}" class="btn btn-secondary" title="Settings">
+                <i data-lucide="settings"></i> <span class="nav-btn-text">Settings</span>
+            </a>
+            <a href="{% url 'logout' %}" class="btn btn-secondary" style="color: var(--button-danger); border-color: rgba(239, 68, 68, 0.2);" title="Log Out">
+                <i data-lucide="log-out" style="color: var(--button-danger);"></i> <span class="nav-btn-text">Log Out</span>
+            </a>
+        </div>
+    </div>
+
+    <div class="container">
+        <!-- Profile Hero section -->
+        <div class="glass-card profile-hero">
+            <div class="avatar-container">
+                {% if profile.avatar %}
+                    <img src="{{ profile.avatar.url }}" alt="{{ request.user.username }}'s avatar">
+                {% else %}
+                    <div class="avatar-placeholder">{{ request.user.username|slice:":1" }}</div>
+                {% endif %}
+            </div>
+            <div class="profile-details">
+                <h2>{{ request.user.username }}</h2>
+                <p>{{ request.user.email }}</p>
+                <div class="join-date">
+                    <i data-lucide="calendar" style="width: 14px; height: 14px;"></i> Joined on {{ request.user.date_joined|date:"F d, Y" }}
+                </div>
+            </div>
+        </div>
+
+        <!-- Metrics cards -->
+        <div class="stats-grid">
+            <div class="glass-card stat-card">
+                <i data-lucide="award" style="width: 24px; height: 24px;"></i>
+                <div class="val">{{ profile.xp }}</div>
+                <div class="lbl">Total XP Points</div>
+            </div>
+            <div class="glass-card stat-card">
+                <i data-lucide="flame" style="width: 24px; height: 24px; color:#f97316;"></i>
+                <div class="val">{{ profile.streak }}</div>
+                <div class="lbl">Current Streak</div>
+            </div>
+            <div class="glass-card stat-card">
+                <i data-lucide="check-square" style="width: 24px; height: 24px; color:#22c55e;"></i>
+                <div class="val">{{ completed_tasks_count }}</div>
+                <div class="lbl">Tasks Finished</div>
+            </div>
+            <div class="glass-card stat-card">
+                <i data-lucide="clock" style="width: 24px; height: 24px;"></i>
+                <div class="val">{{ total_hours }}h</div>
+                <div class="lbl">Focus Duration</div>
+            </div>
+        </div>
+
+        <!-- Badges Card section -->
+        <div class="glass-card">
+            <h3 class="section-title">
+                <i data-lucide="shield-check" style="color:var(--color-primary);"></i> Unlocked Badges
+            </h3>
+            <div class="badges-grid">
+                {% for badge in badges_unlocked %}
+                    <div class="badge-card">
+                        <div class="badge-icon">
+                            <i data-lucide="{{ badge.icon }}"></i>
+                        </div>
+                        <div class="badge-text">
+                            <h4>{{ badge.name }}</h4>
+                            <p>{{ badge.desc }}</p>
+                        </div>
+                    </div>
+                {% empty %}
+                    <p style="grid-column: 1 / -1; text-align: center; color: var(--text-muted); font-size: 0.85rem; padding: 20px;">
+                        No badges unlocked yet. Keep completing focus tasks to earn rewards!
+                    </p>
+                {% endfor %}
+            </div>
+        </div>
+
+        <!-- Exports section -->
+        <div class="glass-card export-section">
+            <h3 class="section-title">
+                <i data-lucide="download" style="color:var(--color-primary);"></i> Export Productivity Reports
+            </h3>
+            <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 8px;">
+                Download your task logs, statistics summaries, and session tracking history for backup or external evaluation.
+            </p>
+            <div class="export-buttons-row">
+                <a href="{% url 'export_tasks_pdf' %}" class="btn btn-secondary">
+                    <i data-lucide="file-text" style="color: #ef4444;"></i> Export Tasks (PDF)
+                </a>
+                <a href="{% url 'export_history_pdf' %}" class="btn btn-secondary">
+                    <i data-lucide="history" style="color: var(--color-primary-hover);"></i> Export Focus History (PDF)
+                </a>
+                <a href="{% url 'export_stats_excel' %}" class="btn btn-secondary">
+                    <i data-lucide="table" style="color: #10b981;"></i> Export Metrics (Excel)
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        lucide.createIcons();
+    </script>
+</body>
+</html>

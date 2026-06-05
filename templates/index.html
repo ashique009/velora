@@ -1,248 +1,3275 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Task Manager</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Velora - Premium Focus & Task Dashboard</title>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
     <style>
-        body {
+        :root {
+            /* Premium Violet Theme (Default) */
+            --bg-gradient: radial-gradient(circle at top, #1e0b36 0%, #0c0418 60%, #05010a 100%);
+            --bg-color: #0c0418;
+            --card-bg: rgba(28, 12, 59, 0.45);
+            --card-border: rgba(168, 85, 247, 0.18);
+            --card-border-hover: rgba(168, 85, 247, 0.35);
+            --text-main: #f3f4f6;
+            --text-muted: #a78bfa;
+            --color-primary: #a855f7;
+            --color-primary-rgb: 168, 85, 247;
+            --color-primary-hover: #c084fc;
+            --color-accent: #e9d5ff;
+            --glow-shadow: 0 0 20px rgba(168, 85, 247, 0.4);
+            --shadow-main: 0 8px 32px 0 rgba(0, 0, 0, 0.5);
+            --header-bg: rgba(20, 8, 43, 0.7);
+            --input-bg: rgba(17, 7, 30, 0.6);
+            --button-success: #22c55e;
+            --button-danger: #ef4444;
+            --sidebar-width: 280px;
+            --rightbar-width: 320px;
+        }
+
+        .theme-dark {
+            /* Sleek Obsidian Dark Theme */
+            --bg-gradient: radial-gradient(circle at top, #121824 0%, #0b0f17 60%, #030508 100%);
+            --bg-color: #0b0f17;
+            --card-bg: rgba(17, 24, 39, 0.5);
+            --card-border: rgba(255, 255, 255, 0.08);
+            --card-border-hover: rgba(59, 130, 246, 0.3);
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --color-primary: #3b82f6;
+            --color-primary-rgb: 59, 130, 246;
+            --color-primary-hover: #60a5fa;
+            --color-accent: #93c5fd;
+            --glow-shadow: 0 0 20px rgba(59, 130, 246, 0.25);
+            --shadow-main: 0 8px 32px 0 rgba(0, 0, 0, 0.4);
+            --header-bg: rgba(15, 23, 42, 0.8);
+            --input-bg: rgba(3, 7, 18, 0.5);
+            --button-success: #10b981;
+            --button-danger: #f43f5e;
+        }
+
+        .theme-light {
+            /* Luxe Lavender Light Theme */
+            --bg-gradient: radial-gradient(circle at top, #f5f3ff 0%, #f1f5f9 60%, #e2e8f0 100%);
+            --bg-color: #f1f5f9;
+            --card-bg: rgba(255, 255, 255, 0.75);
+            --card-border: rgba(124, 58, 237, 0.12);
+            --card-border-hover: rgba(124, 58, 237, 0.3);
+            --text-main: #0f172a;
+            --text-muted: #64748b;
+            --color-primary: #7c3aed;
+            --color-primary-rgb: 124, 58, 237;
+            --color-primary-hover: #6d28d9;
+            --color-accent: #ddd6fe;
+            --glow-shadow: 0 0 15px rgba(124, 58, 237, 0.15);
+            --shadow-main: 0 8px 24px 0 rgba(124, 58, 237, 0.08);
+            --header-bg: rgba(255, 255, 255, 0.8);
+            --input-bg: rgba(241, 245, 249, 0.8);
+            --button-success: #16a34a;
+            --button-danger: #dc2626;
+        }
+
+        * {
+            box-sizing: border-box;
             margin: 0;
-            font-family: Arial;
-            display: flex;
-            background: #0f172a;
-            color: white;
-        }
-
-        /* LEFT SIDEBAR */
-        .sidebar {
-            width: 250px;
-            height: 100vh;
-            background: #1e293b;
-            padding: 15px;
-            overflow-y: auto;
-        }
-
-        .task-item {
-            background: #334155;
-            padding: 10px;
-            margin: 8px 0;
-            border-radius: 6px;
-        }
-
-        /* CENTER */
-        .content {
-            flex: 1;
-            padding: 20px;
-        }
-
-        .box {
-            background: #1e293b;
-            padding: 20px;
-            border-radius: 10px;
-            width: 400px;
-            margin-bottom: 15px;
-        }
-
-        input, textarea {
-            width: 90%;
-            padding: 10px;
-            margin: 5px;
-            border-radius: 5px;
-            border: none;
-        }
-
-        button {
-            padding: 10px;
-            background: #22c55e;
-            border: none;
-            color: white;
-            border-radius: 5px;
-            cursor: pointer;
-        }
-
-        .done {
-            text-decoration: line-through;
-            color: gray;
-        }
-
-        /* RIGHT SIDEBAR 🔥 */
-        .rightbar {
-            width: 300px;
-            height: 100vh;
-            background: #1e293b;
-            padding: 15px;
-        }
-
-        .rightbar ul {
-            list-style: none;
             padding: 0;
+            transition: background 0.3s ease, border-color 0.3s ease, color 0.3s ease;
         }
 
-        .rightbar li {
-            background: #334155;
-            margin: 5px 0;
+        body {
+            background: var(--bg-gradient);
+            color: var(--text-main);
+            font-family: 'Inter', sans-serif;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        /* Ambient background glow elements */
+        .glow-blob {
+            position: absolute;
+            width: 450px;
+            height: 450px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(var(--color-primary-rgb), 0.15) 0%, rgba(0,0,0,0) 70%);
+            filter: blur(40px);
+            z-index: -1;
+            pointer-events: none;
+            animation: float-slow 18s infinite alternate ease-in-out;
+        }
+        .glow-blob-1 { top: 10%; left: -10%; }
+        .glow-blob-2 { bottom: 5%; right: -5%; animation-delay: -6s; }
+
+        @keyframes float-slow {
+            0% { transform: translate(0, 0) scale(1); }
+            50% { transform: translate(30px, -50px) scale(1.1); }
+            100% { transform: translate(-20px, 30px) scale(0.9); }
+        }
+
+        canvas#particleCanvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            pointer-events: none;
+        }
+
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: rgba(var(--color-primary-rgb), 0.3);
+            border-radius: 3px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: rgba(var(--color-primary-rgb), 0.6);
+        }
+
+        /* --- STICKY TOP BANNER --- */
+        .top-timer-banner {
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            height: 65px;
+            background: var(--header-bg);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--card-border);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 24px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25);
+        }
+
+        .logo-section {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .logo-section i {
+            color: var(--color-primary);
+            filter: drop-shadow(0 0 8px var(--color-primary));
+        }
+        .logo-section h1 {
+            font-family: 'Outfit', sans-serif;
+            font-size: 1.35rem;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+        }
+
+        .active-timer-section {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            background: rgba(var(--color-primary-rgb), 0.1);
+            padding: 6px 16px;
+            border-radius: 50px;
+            border: 1px solid var(--card-border);
+            opacity: 0;
+            transform: translateY(-10px);
+            transition: opacity 0.4s ease, transform 0.4s ease;
+        }
+        .active-timer-section.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        .active-timer-section .banner-text {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            max-width: 180px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .active-timer-section .banner-text strong {
+            color: var(--text-main);
+        }
+        .active-timer-section .banner-time {
+            font-family: monospace;
+            font-size: 1.15rem;
+            font-weight: bold;
+            color: var(--text-main);
+            background: rgba(0, 0, 0, 0.2);
+            padding: 3px 10px;
+            border-radius: 8px;
+            letter-spacing: 1px;
+            box-shadow: inset 0 0 5px rgba(0,0,0,0.5);
+        }
+        .banner-controls {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .banner-btn {
+            background: transparent;
+            border: none;
+            color: var(--text-main);
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: background 0.2s, transform 0.2s;
+        }
+        .banner-btn:hover {
+            background: rgba(255, 255, 255, 0.1);
+            transform: scale(1.1);
+        }
+        .banner-btn.btn-finish {
+            background: var(--button-success);
+            color: white;
+        }
+
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        .action-icon-btn {
+            background: rgba(255,255,255,0.05);
+            border: 1px solid var(--card-border);
+            color: var(--text-main);
+            width: 38px;
+            height: 38px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            position: relative;
+        }
+        .action-icon-btn:hover {
+            background: rgba(var(--color-primary-rgb), 0.15);
+            border-color: var(--color-primary);
+            box-shadow: var(--glow-shadow);
+        }
+
+        .theme-selector-dropdown {
+            position: absolute;
+            top: 48px;
+            right: 0;
+            background: var(--bg-color);
+            border: 1px solid var(--card-border);
+            border-radius: 12px;
             padding: 8px;
-            border-radius: 5px;
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+            min-width: 130px;
+            box-shadow: var(--shadow-main);
+            opacity: 0;
+            transform: translateY(10px);
+            pointer-events: none;
+            transition: opacity 0.2s, transform 0.2s;
+            z-index: 120;
+        }
+        .theme-selector-dropdown.active {
+            opacity: 1;
+            transform: translateY(0);
+            pointer-events: all;
+        }
+        .theme-option {
+            padding: 8px 12px;
+            border-radius: 8px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.85rem;
+            color: var(--text-main);
+        }
+        .theme-option:hover {
+            background: rgba(var(--color-primary-rgb), 0.15);
+            color: var(--text-main);
+        }
+
+        /* --- DASHBOARD WRAPPER --- */
+        .dashboard-container {
+            display: grid;
+            grid-template-columns: 20% 60% 20%;
+            flex: 1;
+            width: 100%;
+            max-width: 1800px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* --- LEFT SIDEBAR (GAMIFICATION) --- */
+        .left-sidebar {
+            width: 100%;
+            border-right: 1px solid var(--card-border);
+            padding: 24px;
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+            overflow-y: auto;
+            max-height: calc(100vh - 65px);
+            box-sizing: border-box;
+        }
+
+        .glass-card {
+            background: var(--card-bg);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid var(--card-border);
+            border-radius: 16px;
+            padding: 20px;
+            box-shadow: var(--shadow-main);
+            position: relative;
+            overflow: hidden;
+            transition: transform 0.3s ease, border-color 0.3s ease;
+        }
+        .glass-card:hover {
+            border-color: var(--card-border-hover);
+        }
+
+        .avatar-section {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 12px;
+            text-align: center;
+        }
+        .avatar-icon-ring {
+            width: 70px;
+            height: 70px;
+            border-radius: 50%;
+            background: radial-gradient(circle, var(--color-primary) 0%, transparent 80%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 2px solid var(--color-primary);
+            box-shadow: var(--glow-shadow);
+        }
+        .avatar-icon-ring i {
+            color: white;
+            font-size: 2rem;
+        }
+        .level-badge {
+            background: var(--color-primary);
+            color: white;
+            font-size: 0.75rem;
+            font-weight: bold;
+            padding: 3px 10px;
+            border-radius: 20px;
+            margin-top: -20px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+            text-transform: uppercase;
+        }
+
+        .gamification-stats {
+            width: 100%;
+            margin-top: 15px;
+        }
+        .stat-label-row {
             display: flex;
             justify-content: space-between;
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            margin-bottom: 6px;
+        }
+        .xp-bar-bg {
+            background: rgba(0, 0, 0, 0.3);
+            height: 10px;
+            border-radius: 5px;
+            overflow: hidden;
+            border: 1px solid rgba(255,255,255,0.05);
+        }
+        .xp-bar-fill {
+            background: linear-gradient(90deg, var(--color-primary) 0%, var(--color-primary-hover) 100%);
+            height: 100%;
+            width: 0%;
+            border-radius: 5px;
+            box-shadow: 0 0 10px var(--color-primary);
+            transition: width 0.5s ease-out;
+        }
+
+        .streak-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            background: rgba(249, 115, 22, 0.1);
+            border: 1px solid rgba(249, 115, 22, 0.2);
+            padding: 8px 16px;
+            border-radius: 12px;
+            margin-top: 15px;
+        }
+        .streak-container i {
+            color: #f97316;
+            filter: drop-shadow(0 0 6px #f97316);
+            animation: pulse-glow 2s infinite;
+        }
+        @keyframes pulse-glow {
+            0% { transform: scale(1); filter: drop-shadow(0 0 3px #f97316); }
+            50% { transform: scale(1.15); filter: drop-shadow(0 0 10px #f97316); }
+            100% { transform: scale(1); filter: drop-shadow(0 0 3px #f97316); }
+        }
+
+        /* --- NAVIGATION CARD --- */
+        .navigation-card h3 {
+            font-family: 'Outfit', sans-serif;
+            font-size: 0.95rem;
+            margin-bottom: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: var(--text-muted);
+        }
+        .navigation-menu {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 10px 16px;
+            border-radius: 10px;
+            color: var(--text-main);
+            text-decoration: none;
+            font-size: 0.9rem;
+            font-weight: 500;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid var(--card-border);
+            transition: all 0.2s ease;
+        }
+        .nav-item i {
+            width: 16px;
+            height: 16px;
+            color: var(--color-primary);
+            transition: transform 0.2s ease;
+        }
+        .nav-item:hover {
+            background: rgba(var(--color-primary-rgb), 0.15);
+            border-color: var(--color-primary);
+            transform: translateX(4px);
+        }
+        .nav-item:hover i {
+            transform: scale(1.15);
+        }
+        .nav-item.active {
+            background: rgba(var(--color-primary-rgb), 0.2);
+            border-color: var(--color-primary);
+            font-weight: 600;
+        }
+        .nav-item.nav-logout {
+            border-color: rgba(239, 68, 68, 0.2);
+        }
+        .nav-item.nav-logout i {
+            color: var(--button-danger);
+        }
+        .nav-item.nav-logout:hover {
+            background: rgba(239, 68, 68, 0.1);
+            border-color: var(--button-danger);
+            color: var(--button-danger);
+        }
+
+        .badges-card h3 {
+            font-family: 'Outfit', sans-serif;
+            font-size: 0.95rem;
+            margin-bottom: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: var(--text-muted);
+        }
+        .badges-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+        }
+        .badge-slot {
+            aspect-ratio: 1;
+            border-radius: 10px;
+            background: rgba(0, 0, 0, 0.2);
+            border: 1px dashed var(--card-border);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-muted);
+            cursor: help;
+            position: relative;
+            opacity: 0.6;
+            transition: opacity 0.3s, transform 0.3s;
+        }
+        .badge-slot.unlocked {
+            opacity: 1;
+            background: rgba(var(--color-primary-rgb), 0.1);
+            border: 1px solid rgba(var(--color-primary-rgb), 0.35);
+            color: var(--color-primary-hover);
+            transform: scale(1.05);
+        }
+        .badge-slot i {
+            font-size: 1.25rem;
+        }
+        .badge-slot span {
+            font-size: 0.6rem;
+            margin-top: 4px;
+            text-align: center;
+            display: block;
+        }
+
+        .badge-tooltip {
+            position: absolute;
+            bottom: 110%;
+            left: 50%;
+            transform: translateX(-50%) translateY(5px);
+            background: #090314;
+            border: 1px solid var(--card-border);
+            border-radius: 6px;
+            padding: 6px 10px;
+            font-size: 0.7rem;
+            color: white;
+            white-space: nowrap;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.2s, transform 0.2s;
+            z-index: 10;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.5);
+        }
+        .badge-slot:hover .badge-tooltip {
+            opacity: 1;
+            transform: translateX(-50%) translateY(0);
+        }
+
+        /* --- CENTER PANEL (MAIN DASHBOARD) --- */
+        .center-panel {
+            width: 100%;
+            padding: 24px;
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+            overflow-y: auto;
+            max-height: calc(100vh - 65px);
+            box-sizing: border-box;
+        }
+
+        .welcome-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .welcome-header h2 {
+            font-family: 'Outfit', sans-serif;
+            font-size: 1.8rem;
+            font-weight: 700;
+        }
+        .welcome-header p {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            margin-top: 4px;
+        }
+
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 20px;
+        }
+        .stats-mini-card {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            height: 100%;
+        }
+        .stats-mini-card .icon-box {
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+            background: rgba(var(--color-primary-rgb), 0.15);
+            color: var(--color-primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .stats-mini-card .val {
+            font-size: 1.4rem;
+            font-weight: 700;
+            font-family: 'Outfit', sans-serif;
+        }
+        .stats-mini-card .lbl {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+        }
+
+        /* Charts Section */
+        .analytics-section {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+        .chart-card h3 {
+            font-family: 'Outfit', sans-serif;
+            font-size: 1rem;
+            margin-bottom: 15px;
+        }
+        .chart-container {
+            position: relative;
+            height: 220px;
+            width: 100%;
+        }
+
+        /* Tasks Management Header */
+        .tasks-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 10px;
+        }
+        .tasks-header h3 {
+            font-family: 'Outfit', sans-serif;
+            font-size: 1.25rem;
+            font-weight: 700;
+        }
+        .btn-primary {
+            background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-hover) 100%);
+            color: white;
+            border: none;
+            padding: 8px 18px;
+            border-radius: 10px;
+            font-weight: 500;
+            font-size: 0.9rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            box-shadow: var(--glow-shadow);
+            transition: opacity 0.2s, transform 0.2s;
+        }
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            opacity: 0.95;
+        }
+
+        /* Tasks Grid */
+        .tasks-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 20px;
+        }
+        .task-card {
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+            position: relative;
+            transition: transform 0.3s, border-color 0.3s, box-shadow 0.3s;
+        }
+        .task-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+        }
+        .task-card.completed-task {
+            opacity: 0.65;
+            border-color: rgba(var(--color-primary-rgb), 0.05);
+        }
+        .task-card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: 10px;
+        }
+        .task-title {
+            font-family: 'Outfit', sans-serif;
+            font-size: 1.05rem;
+            font-weight: 600;
+            word-break: break-word;
+        }
+        .task-title.done {
+            text-decoration: line-through;
+            color: var(--text-muted);
+        }
+        .task-actions {
+            display: flex;
+            gap: 6px;
+        }
+        .task-action-btn {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--card-border);
+            color: var(--text-main);
+            width: 30px;
+            height: 30px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        .task-action-btn:hover {
+            background: rgba(var(--color-primary-rgb), 0.2);
+            border-color: var(--color-primary);
+            color: white;
+            transform: scale(1.1);
+        }
+        .task-action-btn.delete {
+            color: #ef4444;
+            border-color: rgba(239, 68, 68, 0.2);
+        }
+        .task-action-btn.delete:hover {
+            background: rgba(239, 68, 68, 0.2);
+            border-color: #ef4444;
+            color: white;
+        }
+
+        .task-meta {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .task-rules {
+            font-size: 0.85rem;
+            background: rgba(0, 0, 0, 0.2);
+            padding: 8px 12px;
+            border-radius: 8px;
+            min-height: 45px;
+            max-height: 80px;
+            overflow-y: auto;
+            border-left: 3px solid var(--color-primary);
+        }
+
+        .task-timer-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-top: 4px;
+        }
+        .task-timer-display {
+            font-family: monospace;
+            font-size: 1.1rem;
+            font-weight: bold;
+            letter-spacing: 0.5px;
+        }
+        .progress-bar-bg {
+            background: rgba(0,0,0,0.3);
+            height: 6px;
+            border-radius: 3px;
+            overflow: hidden;
+            width: 100%;
+            margin: 6px 0;
+        }
+        .progress-bar-fill {
+            background: var(--color-primary);
+            height: 100%;
+            width: 100%;
+            border-radius: 3px;
+            transition: width 0.3s linear;
+        }
+
+        .task-controls {
+            display: flex;
+            gap: 8px;
+            margin-top: 6px;
+        }
+        .task-btn {
+            flex: 1;
+            padding: 6px 10px;
+            border-radius: 8px;
+            font-size: 0.8rem;
+            font-weight: 500;
+            cursor: pointer;
+            border: 1px solid transparent;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 4px;
+            transition: background 0.2s, color 0.2s;
+        }
+        .task-btn.btn-play {
+            background: rgba(var(--color-primary-rgb), 0.15);
+            border-color: var(--card-border);
+            color: var(--color-primary-hover);
+        }
+        .task-btn.btn-play:hover {
+            background: var(--color-primary);
+            color: white;
+        }
+        .task-btn.btn-pause {
+            background: rgba(255,255,255,0.05);
+            border-color: var(--card-border);
+            color: var(--text-main);
+        }
+        .task-btn.btn-pause:hover {
+            background: rgba(255,255,255,0.1);
+        }
+        .task-btn.btn-complete {
+            background: var(--button-success);
+            color: white;
+        }
+        .task-btn.btn-complete:hover {
+            opacity: 0.9;
+        }
+
+        /* --- RIGHT SIDEBAR (TODAY'S PLAN) --- */
+        .right-sidebar {
+            width: 100%;
+            border-left: 1px solid var(--card-border);
+            padding: 24px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            overflow-y: auto;
+            max-height: calc(100vh - 65px);
+            box-sizing: border-box;
+        }
+
+        .rightbar-header {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .rightbar-header h2 {
+            font-family: 'Outfit', sans-serif;
+            font-size: 1.25rem;
+            font-weight: 700;
+        }
+
+        .plan-input-group {
+            display: flex;
+            gap: 8px;
+        }
+        .plan-input {
+            flex: 1;
+            background: var(--input-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 8px;
+            padding: 8px 12px;
+            color: var(--text-main);
+            font-size: 0.85rem;
+            outline: none;
+        }
+        .plan-input:focus {
+            border-color: var(--color-primary);
+            box-shadow: 0 0 5px rgba(var(--color-primary-rgb), 0.5);
+        }
+        .btn-square {
+            background: var(--color-primary);
+            color: white;
+            border: none;
+            width: 36px;
+            height: 36px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+        }
+        .btn-square:hover {
+            background: var(--color-primary-hover);
+        }
+
+        .plan-list {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-top: 10px;
+        }
+        .plan-item {
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 10px;
+            padding: 10px 12px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+            cursor: grab;
+            user-select: none;
+            transition: transform 0.2s, opacity 0.2s;
+        }
+        .plan-item.dragging {
+            opacity: 0.5;
+            transform: scale(0.98);
+        }
+        .plan-item-left {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex: 1;
+        }
+        .plan-drag-handle {
+            color: var(--text-muted);
+            cursor: grab;
+            display: flex;
+            align-items: center;
+        }
+        .plan-checkbox {
+            appearance: none;
+            -webkit-appearance: none;
+            width: 18px;
+            height: 18px;
+            border: 2px solid var(--card-border);
+            border-radius: 4px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+        .plan-checkbox:checked {
+            background: var(--color-primary);
+            border-color: var(--color-primary);
+        }
+        .plan-checkbox:checked::after {
+            content: '✓';
+            color: white;
+            font-size: 12px;
+            font-weight: bold;
+            position: absolute;
+        }
+        .plan-text {
+            font-size: 0.85rem;
+            color: var(--text-main);
+            word-break: break-all;
+        }
+        .plan-text.completed {
+            text-decoration: line-through;
+            color: var(--text-muted);
+        }
+        .btn-delete-plan {
+            background: rgba(239, 68, 68, 0.05);
+            border: 1px solid rgba(239, 68, 68, 0.2);
+            color: #ef4444;
+            width: 24px;
+            height: 24px;
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        .btn-delete-plan:hover {
+            background: rgba(239, 68, 68, 0.2);
+            border-color: #ef4444;
+            color: white;
+        }
+
+        /* --- MODAL DIALOGS --- */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(8px);
+            z-index: 200;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+        }
+        .modal-overlay.active {
+            opacity: 1;
+            pointer-events: all;
+        }
+        .modal-content {
+            background: var(--bg-color);
+            border: 1px solid var(--card-border);
+            border-radius: 16px;
+            width: 90%;
+            max-width: 420px;
+            padding: 24px;
+            box-shadow: var(--shadow-main);
+            transform: scale(0.9);
+            transition: transform 0.3s ease;
+        }
+        .modal-overlay.active .modal-content {
+            transform: scale(1);
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 18px;
+        }
+        .modal-header h3 {
+            font-family: 'Outfit', sans-serif;
+            font-size: 1.2rem;
+            font-weight: 700;
+        }
+        .btn-close-modal {
+            background: transparent;
+            border: none;
+            color: var(--text-muted);
+            cursor: pointer;
+        }
+        .btn-close-modal:hover {
+            color: var(--text-main);
+        }
+
+        .modal-form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            margin-bottom: 14px;
+        }
+        .modal-form-group label {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            font-weight: 500;
+        }
+        .modal-input {
+            background: var(--input-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 8px;
+            padding: 10px 12px;
+            color: var(--text-main);
+            font-family: inherit;
+            font-size: 0.9rem;
+            outline: none;
+        }
+        .modal-input:focus {
+            border-color: var(--color-primary);
+        }
+        textarea.modal-input {
+            resize: vertical;
+            min-height: 80px;
+        }
+
+        .modal-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+            margin-top: 20px;
+        }
+        .btn-cancel {
+            background: rgba(255,255,255,0.05);
+            border: 1px solid var(--card-border);
+            color: var(--text-main);
+            padding: 8px 16px;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+        .btn-cancel:hover {
+            background: rgba(255,255,255,0.1);
+        }
+        .btn-danger {
+            background: var(--button-danger);
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+        .btn-danger:hover {
+            opacity: 0.9;
+        }
+
+        /* --- TOAST NOTIFICATIONS --- */
+        .toast-container {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 300;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            pointer-events: none;
+        }
+        .toast {
+            background: rgba(20, 10, 35, 0.85);
+            backdrop-filter: blur(12px);
+            border: 1px solid var(--color-primary);
+            border-left: 4px solid var(--color-primary);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
+            color: white;
+            padding: 12px 20px;
+            border-radius: 8px;
+            font-size: 0.85rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            min-width: 250px;
+            transform: translateX(120%);
+            transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            pointer-events: all;
+        }
+        .toast.show {
+            transform: translateX(0);
+        }
+        .toast i {
+            color: var(--color-primary-hover);
+        }
+
+        /* --- DYNAMIC RESPONSIVE & LAYOUT STYLES --- */
+        .hamburger-btn {
+            display: none !important;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--card-border) !important;
+            color: var(--text-main);
+            width: 38px;
+            height: 38px;
+            border-radius: 10px;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            margin-right: 12px;
+        }
+
+        .sidebar-backdrop {
+            position: fixed;
+            top: 65px;
+            left: 0;
+            width: 100vw;
+            height: calc(100vh - 65px);
+            background: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(4px);
+            -webkit-backdrop-filter: blur(4px);
+            z-index: 140;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+        }
+        .sidebar-backdrop.active {
+            opacity: 1;
+            pointer-events: all;
+        }
+
+        /* Forms full-width enforcement */
+        .modal-input {
+            width: 100% !important;
+            box-sizing: border-box;
+        }
+
+        /* Task grid & buttons responsiveness */
+        .tasks-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+            gap: 16px;
+        }
+        .task-card {
+            max-width: 100%;
+            box-sizing: border-box;
+        }
+        .task-controls {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+        .task-btn {
+            flex: 1 1 calc(50% - 4px);
+            min-width: 80px;
+            white-space: nowrap;
+        }
+
+        /* Breakpoint: Tablets and smaller screens (< 1024px) */
+        @media (max-width: 1024px) {
+            .hamburger-btn {
+                display: flex !important;
+            }
+
+            .left-sidebar {
+                position: fixed;
+                top: 65px;
+                left: -280px;
+                width: 280px;
+                height: calc(100vh - 65px);
+                background: var(--bg-color);
+                z-index: 150;
+                box-shadow: var(--shadow-main);
+                transition: left 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+                border-right: 1px solid var(--card-border);
+                max-height: none;
+            }
+            .left-sidebar.open {
+                left: 0;
+            }
+
+            .dashboard-container {
+                grid-template-columns: 65% 35%;
+            }
+            .center-panel {
+                width: 100%;
+                max-height: calc(100vh - 65px);
+            }
+            .right-sidebar {
+                width: 100%;
+                border-left: 1px solid var(--card-border);
+                max-height: calc(100vh - 65px);
+            }
+            .dashboard-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 16px;
+            }
+            .plan-card {
+                height: calc(100vh - 113px);
+            }
+        }
+
+        /* Breakpoint: Mobile screens (< 768px) */
+        @media (max-width: 768px) {
+            .dashboard-container {
+                display: flex;
+                flex-direction: column;
+            }
+            .center-panel {
+                width: 100%;
+                padding: 16px;
+                max-height: none;
+                overflow-y: visible;
+            }
+            .right-sidebar {
+                width: 100%;
+                border-left: none;
+                border-top: 1px solid var(--card-border);
+                padding: 24px 16px;
+                max-height: none;
+                overflow-y: visible;
+            }
+            .dashboard-grid {
+                grid-template-columns: 1fr;
+                gap: 12px;
+            }
+            .analytics-section {
+                grid-template-columns: 1fr;
+                gap: 16px;
+            }
+            .plan-card {
+                height: auto;
+                min-height: 350px;
+            }
+            .logo-section h1 {
+                display: none;
+            }
+            .active-timer-section {
+                gap: 10px;
+                padding: 4px 12px;
+            }
+            .active-timer-section .banner-text {
+                max-width: 100px;
+                font-size: 0.75rem;
+            }
+            .active-timer-section .banner-time {
+                font-size: 0.95rem;
+                padding: 2px 6px;
+            }
+            .header-actions {
+                gap: 8px;
+            }
+        }
+
+        /* Breakpoint: Tiny Mobile screens (< 480px) */
+        @media (max-width: 480px) {
+            .top-timer-banner {
+                padding: 0 12px;
+            }
+            .active-timer-section .banner-text {
+                display: none; /* Hide focus text entirely on tiny screens */
+            }
+            .welcome-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 12px;
+            }
+            .welcome-header button {
+                width: 100%;
+                justify-content: center;
+            }
+            .chart-container {
+                height: 180px;
+            }
+        }
+
+        /* --- CALENDAR SYSTEM STYLES --- */
+        .calendar-card {
+            min-height: 450px;
+            display: flex;
+            flex-direction: column;
+            margin-bottom: 20px;
+            margin-top: 20px;
+        }
+        #calendarDaysGrid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 8px;
+            margin-top: 8px;
+            flex: 1;
+            grid-auto-rows: 1fr;
+        }
+        .calendar-day-box {
+            min-height: 55px;
+            border-radius: 8px;
+            background: rgba(0, 0, 0, 0.15);
+            border: 1px solid rgba(255, 255, 255, 0.03);
+            padding: 6px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            cursor: pointer;
+            position: relative;
+            transition: background 0.2s, border-color 0.2s;
+        }
+        .calendar-day-box:hover {
+            background: rgba(var(--color-primary-rgb), 0.1);
+            border-color: rgba(var(--color-primary-rgb), 0.25);
+        }
+        .calendar-day-box.today {
+            border: 2px solid var(--color-primary) !important;
+            box-shadow: var(--glow-shadow);
+        }
+        .calendar-day-number {
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: var(--text-main);
+        }
+        .calendar-day-box.empty {
+            opacity: 0.2;
+            pointer-events: none;
+            background: transparent;
+            border: none;
+        }
+        .calendar-dots-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 3px;
+            margin-top: 4px;
+            max-height: 20px;
+            overflow: hidden;
+        }
+        .calendar-dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+        }
+        .calendar-dot.completed {
+            background: #22c55e;
+            box-shadow: 0 0 5px #22c55e;
+        }
+        .calendar-dot.pending {
+            background: var(--color-primary);
+            box-shadow: 0 0 5px var(--color-primary);
+        }
+
+        /* --- DASHBOARD SECTION HEIGHT AND PROPORTION IMPROVEMENTS --- */
+        .history-card {
+            min-height: 300px;
+            display: flex;
+            flex-direction: column;
+            margin-bottom: 20px;
+        }
+        .history-card .session-history-list {
+            flex: 1;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .plan-card {
+            height: calc(100vh - 113px);
+            min-height: 400px;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+        .plan-list-wrapper {
+            flex: 1;
+            overflow-y: auto;
+            padding-right: 4px;
+        }
+
+        /* --- NAVBAR USER PROFILE MENU STYLES --- */
+        .avatar-header-btn {
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            outline: none;
+        }
+        .navbar-avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            border: 1.5px solid var(--color-primary);
+            object-fit: cover;
+            box-shadow: 0 0 10px rgba(var(--color-primary-rgb), 0.25);
+        }
+        .navbar-avatar-placeholder {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            border: 1.5px solid var(--color-primary);
+            background: rgba(var(--color-primary-rgb), 0.15);
+            color: var(--color-primary-hover);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.85rem;
+            font-weight: 700;
+            text-transform: uppercase;
         }
     </style>
 </head>
+<body class="theme-{{ profile.theme_preference|default:'violet' }}">
 
-<body>
+    <!-- Glowing Background Blobs -->
+    <div class="glow-blob glow-blob-1"></div>
+    <div class="glow-blob glow-blob-2"></div>
 
-<!-- 🔵 LEFT -->
-<div class="sidebar">
-    <h2>📌 Tasks</h2>
+    <!-- Background Sparkles -->
+    <canvas id="particleCanvas"></canvas>
 
-    {% for task in tasks %}
-        <div class="task-item">
-            <strong class="{% if task.completed %}done{% endif %}">
-                {{ task.title }}
-            </strong>
+    <!-- Sidebar Backdrop for mobile drawer -->
+    <div id="sidebarBackdrop" class="sidebar-backdrop" onclick="toggleLeftSidebar()"></div>
+
+    <!-- --- STICKY TOP TIMER BANNER --- -->
+    <div class="top-timer-banner">
+        <div class="logo-section">
+            <button id="hamburgerBtn" onclick="toggleLeftSidebar()" class="hamburger-btn" title="Toggle Sidebar">
+                <i data-lucide="menu" style="width: 18px; height: 18px;"></i>
+            </button>
+            <svg class="logo-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="width: 22px; height: 22px; color: var(--color-primary); filter: drop-shadow(0 0 8px var(--color-primary));">
+                <path d="M4 4.5L12 20L20 4.5" />
+            </svg>
+            <h1>Velora</h1>
         </div>
-    {% endfor %}
-</div>
 
-<!-- 🟢 CENTER -->
-<div class="content">
-
-    <h1>📅 Task Manager</h1>
-
-    <!-- Add Task -->
-    <div class="box">
-        <form method="POST">
-            {% csrf_token %}
-            <input type="text" name="title" placeholder="Task name" required>
-            <input type="number" name="duration" placeholder="Time in minutes" required>
-            <textarea name="rules" placeholder="Rules"></textarea>
-            <button type="submit">Add Task</button>
-        </form>
-    </div>
-
-    <hr>
-
-    <!-- Tasks -->
-    {% for task in tasks %}
-    <div class="box">
-        
-        <h3 class="{% if task.completed %}done{% endif %}">
-            {{ task.title }}
-        </h3>
-
-        <p>⏳ {{ task.duration }} mins</p>
-        <p>📌 {{ task.rules }}</p>
-
-        <p id="timer{{ task.id }}">00:00</p>
-
-        <div style="background:#475569; height:10px; border-radius:5px;">
-            <div id="bar{{ task.id }}" 
-                 style="background:#22c55e; height:10px; width:100%; border-radius:5px;">
+        <!-- Active Timer Info -->
+        <div id="topBannerTimer" class="active-timer-section" style="display: none;">
+            <div class="banner-text">
+                ⚡ Focus: <strong id="topBannerTaskTitle">N/A</strong>
+            </div>
+            <div id="topBannerClock" class="banner-time">00:00</div>
+            <div class="banner-controls">
+                <button id="topBannerPauseBtn" onclick="toggleTopTimer()" class="banner-btn" title="Pause/Resume">
+                    <i id="topBannerPauseIcon" data-lucide="pause" style="width: 14px; height: 14px;"></i>
+                </button>
+                <button id="topBannerCompleteBtn" onclick="completeTopTask()" class="banner-btn btn-finish" title="Complete Task">
+                    <i data-lucide="check" style="width: 14px; height: 14px;"></i>
+                </button>
             </div>
         </div>
 
-        <br>
+        <div class="header-actions">
+            <!-- Alert Request Button -->
+            <button onclick="requestAlertPermission()" class="action-icon-btn" title="Enable Notifications">
+                <i data-lucide="bell" style="width: 18px; height: 18px;"></i>
+            </button>
 
-        <button onclick="startTimer(parseInt('{{ task.duration }}'), 'timer{{ task.id }}')">▶ Start</button>
-        <button onclick="pauseTimer('timer{{ task.id }}')">⏸ Pause</button>
+            <!-- Theme Toggle Icon -->
+            <div style="position: relative;">
+                <button onclick="toggleThemeDropdown()" class="action-icon-btn" title="Change Theme">
+                    <i data-lucide="palette" style="width: 18px; height: 18px;"></i>
+                </button>
+                <!-- Theme Dropdown -->
+                <div id="themeDropdown" class="theme-selector-dropdown">
+                    <div class="theme-option" onclick="changeTheme('violet')">
+                        <i data-lucide="sparkles" style="width: 14px; height: 14px; color: #a855f7;"></i>
+                        Violet
+                    </div>
+                    <div class="theme-option" onclick="changeTheme('dark')">
+                        <i data-lucide="moon" style="width: 14px; height: 14px; color: #3b82f6;"></i>
+                        Obsidian
+                    </div>
+                    <div class="theme-option" onclick="changeTheme('light')">
+                        <i data-lucide="sun" style="width: 14px; height: 14px; color: #7c3aed;"></i>
+                        Lavender
+                    </div>
+                </div>
+            </div>
 
-        <br><br>
-
-        {% if not task.completed %}
-            <a href="{% url 'complete' task.id %}">
-                <button>✔ Done</button>
-            </a>
-        {% else %}
-            <p>✅ Completed</p>
-        {% endif %}
-
+            <!-- User Avatar & Dropdown -->
+            <div style="position: relative; margin-left: 10px;">
+                <button onclick="toggleProfileDropdown()" class="avatar-header-btn" title="User Profile Menu">
+                    {% if profile.avatar %}
+                        <img src="{{ profile.avatar.url }}" alt="{{ request.user.username }} avatar" class="navbar-avatar">
+                    {% else %}
+                        <div class="navbar-avatar-placeholder">{{ request.user.username|slice:":1" }}</div>
+                    {% endif %}
+                </button>
+                <!-- Profile Dropdown Menu -->
+                <div id="profileDropdown" class="theme-selector-dropdown" style="right: 0; left: auto; min-width: 160px; padding: 6px 0;">
+                    <div style="padding: 10px 14px; border-bottom: 1px solid rgba(255,255,255,0.08); font-size: 0.8rem; font-weight: 600; color: var(--text-muted);">
+                        👋 Hi, {{ request.user.username }}
+                    </div>
+                    <a href="{% url 'profile' %}" class="theme-option" style="text-decoration: none;">
+                        <i data-lucide="user" style="width: 14px; height: 14px;"></i> Profile
+                    </a>
+                    <a href="{% url 'settings' %}" class="theme-option" style="text-decoration: none;">
+                        <i data-lucide="settings" style="width: 14px; height: 14px;"></i> Settings
+                    </a>
+                    {% if request.user.is_staff %}
+                    <a href="/admin/" class="theme-option" style="text-decoration: none;" target="_blank">
+                        <i data-lucide="shield" style="width: 14px; height: 14px;"></i> Admin Panel
+                    </a>
+                    {% endif %}
+                    <a href="{% url 'logout' %}" class="theme-option" style="text-decoration: none; border-top: 1px solid rgba(255,255,255,0.08); color: var(--button-danger);">
+                        <i data-lucide="log-out" style="width: 14px; height: 14px; color: var(--button-danger);"></i> Log Out
+                    </a>
+                </div>
+            </div>
+        </div>
     </div>
-    {% endfor %}
 
-</div>
+    <!-- --- MAIN LAYOUT --- -->
+    <div class="dashboard-container">
 
-<!-- 🟣 RIGHT SIDEBAR -->
-<div class="rightbar">
-    <h2>📝 Today Plan</h2>
+        <!-- --- LEFT SIDEBAR (GAMIFICATION) --- -->
+        <div class="left-sidebar">
+            <!-- Profile Info Card -->
+            <div class="glass-card avatar-section">
+                <div class="avatar-icon-ring" style="overflow: hidden; border: none; padding: 0;">
+                    {% if profile.avatar %}
+                        <img src="{{ profile.avatar.url }}" alt="{{ request.user.username }} avatar" style="width: 100%; height: 100%; object-fit: cover;">
+                    {% else %}
+                        <i data-lucide="user"></i>
+                    {% endif %}
+                </div>
+                <div id="userLevelBadge" class="level-badge">LEVEL 1</div>
+                <div>
+                    <h3 style="font-family:'Outfit'; font-size: 1.1rem; font-weight: 600;">{{ request.user.username }}</h3>
+                    <p style="font-size: 0.75rem; color: var(--text-muted); margin-top: 2px;">Daily Grind</p>
+                </div>
 
-    <input type="text" id="planInput" placeholder="Add point...">
-    <button onclick="addPlan()">➕ Add</button>
+                <div class="gamification-stats">
+                    <div class="stat-label-row">
+                        <span id="userXPDisplay">0 XP</span>
+                        <span id="nextLevelXPDisplay">1000 XP</span>
+                    </div>
+                    <div class="xp-bar-bg">
+                        <div id="userXPBar" class="xp-bar-fill"></div>
+                    </div>
+                </div>
 
-    <ul id="planList"></ul>
-</div>
+                <!-- Daily Streak -->
+                <div class="streak-container">
+                    <i data-lucide="flame" style="width: 18px; height: 18px;"></i>
+                    <span style="font-size: 0.85rem; font-weight: bold; color: #f97316;">
+                        <span id="streakCount">0</span> Day Streak
+                    </span>
+                </div>
+            </div>
 
-<!-- 🔥 SCRIPT -->
-<script>
-let timers = {};
+            <!-- Navigation Card -->
+            <div class="glass-card navigation-card">
+                <h3>📌 Navigation</h3>
+                <div class="navigation-menu">
+                    <a href="{% url 'home' %}" class="nav-item active">
+                        <i data-lucide="layout-dashboard"></i>
+                        <span>Dashboard</span>
+                    </a>
+                    <a href="#focusCalendarSection" class="nav-item" onclick="scrollToCalendar(event)">
+                        <i data-lucide="calendar"></i>
+                        <span>Focus Calendar</span>
+                    </a>
+                    <a href="{% url 'profile' %}" class="nav-item">
+                        <i data-lucide="user"></i>
+                        <span>User Profile</span>
+                    </a>
+                    <a href="{% url 'settings' %}" class="nav-item">
+                        <i data-lucide="settings"></i>
+                        <span>Account Settings</span>
+                    </a>
+                    <a href="{% url 'logout' %}" class="nav-item nav-logout">
+                        <i data-lucide="log-out"></i>
+                        <span>Log Out</span>
+                    </a>
+                </div>
+            </div>
 
-function startTimer(minutes, elementId) {
-    let timer = minutes * 60;
-    let total = timer;
+            <!-- Badges Card -->
+            <div class="glass-card badges-card">
+                <h3>🏆 Badges</h3>
+                <div class="badges-grid">
+                    <div id="badge-initiate" class="badge-slot">
+                        <i data-lucide="award"></i>
+                        <span>Initiate</span>
+                        <div class="badge-tooltip">Complete your 1st task</div>
+                    </div>
+                    <div id="badge-runner" class="badge-slot">
+                        <i data-lucide="rocket"></i>
+                        <span>Runner</span>
+                        <div class="badge-tooltip">Earn 500 XP</div>
+                    </div>
+                    <div id="badge-master" class="badge-slot">
+                        <i data-lucide="shield"></i>
+                        <span>Master</span>
+                        <div class="badge-tooltip">Complete a 60m+ task</div>
+                    </div>
+                    <div id="badge-streak" class="badge-slot">
+                        <i data-lucide="zap"></i>
+                        <span>Aligned</span>
+                        <div class="badge-tooltip">Reach a 3-day streak</div>
+                    </div>
+                    <div id="badge-legend" class="badge-slot">
+                        <i data-lucide="crown"></i>
+                        <span>Legend</span>
+                        <div class="badge-tooltip">Earn 2,000 XP</div>
+                    </div>
+                    <div id="badge-grind" class="badge-slot">
+                        <i data-lucide="hourglass"></i>
+                        <span>Grind</span>
+                        <div class="badge-tooltip">Complete 5 tasks</div>
+                    </div>
+                </div>
+            </div>
+        </div>
 
-    let element = document.getElementById(elementId);
-    let bar = document.getElementById("bar" + elementId.replace("timer",""));
+        <!-- --- CENTER PANEL (MAIN DASHBOARD) --- -->
+        <div class="center-panel">
+            
+            <!-- Greeting & Header -->
+            <div class="welcome-header">
+                <div>
+                    <h2 id="greetingText">Focus Session Dashboard</h2>
+                    <p>Unlock achievements and boost your concentration metrics.</p>
+                </div>
+                <button onclick="openAddModal()" class="btn-primary">
+                    <i data-lucide="plus" style="width: 16px; height: 16px;"></i>
+                    Create Task
+                </button>
+            </div>
 
-    if (timers[elementId]) return;
+            <!-- Stats Mini Panel -->
+            <div class="dashboard-grid">
+                <div class="glass-card stats-mini-card">
+                    <div class="icon-box">
+                        <i data-lucide="flame" style="width: 22px; height: 22px; color: #f97316;"></i>
+                    </div>
+                    <div>
+                        <div id="statsDailyStreak" class="val">0</div>
+                        <div class="lbl">Daily Streak</div>
+                    </div>
+                </div>
+                <div class="glass-card stats-mini-card">
+                    <div class="icon-box">
+                        <i data-lucide="hourglass" style="width: 22px; height: 22px; color: var(--color-primary);"></i>
+                    </div>
+                    <div>
+                        <div id="statsTotalHours" class="val">0.0</div>
+                        <div class="lbl">Total Focus Hours</div>
+                    </div>
+                </div>
+                <div class="glass-card stats-mini-card">
+                    <div class="icon-box">
+                        <i data-lucide="calendar" style="width: 22px; height: 22px; color: #10b981;"></i>
+                    </div>
+                    <div>
+                        <div id="statsWeeklyHours" class="val">0.0</div>
+                        <div class="lbl">Weekly Focus Hours</div>
+                    </div>
+                </div>
+                <div class="glass-card stats-mini-card">
+                    <div class="icon-box">
+                        <i data-lucide="award" style="width: 22px; height: 22px; color: #ef4444;"></i>
+                    </div>
+                    <div>
+                        <div id="statsLongestSession" class="val">0m</div>
+                        <div class="lbl">Longest Session</div>
+                    </div>
+                </div>
+            </div>
 
-    timers[elementId] = setInterval(function () {
+            <!-- Charts Section -->
+            <div class="analytics-section">
+                <!-- Weekly Focus Bar Chart -->
+                <div class="glass-card chart-card">
+                    <h3>Focus Distribution (Last 7 Days)</h3>
+                    <div class="chart-container">
+                        <canvas id="focusHoursChart"></canvas>
+                    </div>
+                </div>
 
-        let min = Math.floor(timer / 60);
-        let sec = timer % 60;
+                <!-- Completion Ratio Doughnut -->
+                <div class="glass-card chart-card">
+                    <h3>Task Statistics</h3>
+                    <div class="chart-container">
+                        <canvas id="taskCompletionChart"></canvas>
+                    </div>
+                </div>
+            </div>
 
-        element.textContent =
-            (min < 10 ? "0" + min : min) + ":" +
-            (sec < 10 ? "0" + sec : sec);
+            <!-- --- FOCUS CALENDAR --- -->
+            <div id="focusCalendarSection" class="glass-card calendar-card">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+                    <h3 style="font-family: 'Outfit'; font-size: 1.15rem; font-weight: 700; display: flex; align-items: center; gap: 8px;">
+                        <i data-lucide="calendar" style="color: var(--color-primary); width: 18px; height: 18px;"></i> Focus Calendar
+                    </h3>
+                    <div style="display: flex; align-items: center; gap: 10px;">
+                        <button onclick="prevMonth()" class="action-icon-btn" style="width: 32px; height: 32px; border-radius: 8px;" type="button" title="Previous Month">
+                            <i data-lucide="chevron-left" style="width: 14px; height: 14px;"></i>
+                        </button>
+                        <span id="calendarMonthYear" style="font-family: 'Outfit'; font-weight: 600; font-size: 0.95rem; min-width: 120px; text-align: center;"></span>
+                        <button onclick="nextMonth()" class="action-icon-btn" style="width: 32px; height: 32px; border-radius: 8px;" type="button" title="Next Month">
+                            <i data-lucide="chevron-right" style="width: 14px; height: 14px;"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="calendar-weekday-grid" style="display: grid; grid-template-columns: repeat(7, 1fr); text-align: center; font-size: 0.75rem; color: var(--text-muted); font-weight: 600; padding-bottom: 8px; border-bottom: 1px solid rgba(255,255,255,0.05);">
+                    <div>Sun</div><div>Mon</div><div>Tue</div><div>Wed</div><div>Thu</div><div>Fri</div><div>Sat</div>
+                </div>
+                <div id="calendarDaysGrid"></div>
+            </div>
 
-        let percent = (timer / total) * 100;
-        if (bar) bar.style.width = percent + "%";
+            <!-- --- SESSION HISTORY --- -->
+            <div class="glass-card history-card">
+                <h3 style="font-family: 'Outfit'; font-size: 1.15rem; font-weight: 700; display: flex; align-items: center; gap: 8px; margin-bottom: 15px;">
+                    <i data-lucide="history" style="color: var(--color-primary); width: 18px; height: 18px;"></i> Focus Session History
+                </h3>
+                <div class="session-history-list">
+                    {% for session in sessions %}
+                    <div class="session-item" style="background: rgba(0, 0, 0, 0.2); border: 1px solid var(--card-border); border-radius: 10px; padding: 12px 16px; display: flex; justify-content: space-between; align-items: center;">
+                        <div>
+                            <strong style="color: var(--text-main); font-size: 0.9rem;">{{ session.task_title }}</strong>
+                            <div style="font-size: 0.75rem; color: var(--text-muted); margin-top: 3px;">⏳ Focused for {{ session.duration }} mins</div>
+                        </div>
+                        <div style="text-align: right;">
+                            <span style="font-size: 0.8rem; color: #10b981; font-weight: bold;">Completed</span>
+                            <div style="font-size: 0.7rem; color: var(--text-muted); margin-top: 3px;">{{ session.completed_at|date:"M d, Y H:i" }}</div>
+                        </div>
+                    </div>
+                    {% empty %}
+                    <div style="text-align: center; color: var(--text-muted); font-size: 0.85rem; padding: 30px;">
+                        No focus sessions recorded yet. Start focusing to log database entries!
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
 
-        timer--;
+            <!-- Tasks Header -->
+            <div class="tasks-header">
+                <h3>📅 Current Schedule</h3>
+            </div>
 
-        if (timer < 0) {
-            clearInterval(timers[elementId]);
-            element.textContent = "⏰ Time Over!";
-            if (bar) bar.style.width = "0%";
+            <!-- Tasks Grid -->
+            <div class="tasks-grid">
+                {% for task in tasks %}
+                <div class="glass-card task-card {% if task.completed %}completed-task{% endif %}" id="taskCard{{ task.id }}">
+                    <div class="task-card-header">
+                        <span class="task-title {% if task.completed %}done{% endif %}" id="taskTitle{{ task.id }}">
+                            {{ task.title }}
+                        </span>
+                        <div class="task-actions">
+                            <button onclick="openEditModal('{{ task.id }}', '{{ task.title|escapejs }}', '{{ task.duration }}', '{{ task.rules|escapejs }}', '{{ task.assigned_date|date:"Y-m-d" }}')" class="task-action-btn" title="Edit Task">
+                                <i data-lucide="edit-3" style="width: 14px; height: 14px;"></i>
+                            </button>
+                            <button onclick="openDeleteModal('{% url 'delete_task' task.id %}')" class="task-action-btn delete" title="Delete Task">
+                                <i data-lucide="trash-2" style="width: 14px; height: 14px;"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="task-meta">
+                        <i data-lucide="hourglass" style="width: 13px; height: 13px;"></i>
+                        <span>{{ task.duration }} Mins Session</span>
+                    </div>
+
+                    {% if task.rules %}
+                    <div class="task-rules">
+                        {{ task.rules }}
+                    </div>
+                    {% endif %}
+
+                    <!-- Custom Progress Timer UI -->
+                    <div>
+                        <div class="task-timer-row">
+                            <span id="taskTimerDisplay{{ task.id }}" class="task-timer-display">
+                                {% if task.completed %}Completed{% else %}00:00{% endif %}
+                            </span>
+                            <span style="font-size:0.75rem; color: var(--text-muted);" id="taskPercentDisplay{{ task.id }}"></span>
+                        </div>
+                        <div class="progress-bar-bg">
+                            <div id="taskBarFill{{ task.id }}" class="progress-bar-fill" style="width: {% if task.completed %}100%{% else %}0%{% endif %};"></div>
+                        </div>
+                    </div>
+
+                    <div class="task-controls">
+                        {% if not task.completed %}
+                            <button id="taskPlayBtn{{ task.id }}" onclick="startTaskTimer('{{ task.id }}', '{{ task.title|escapejs }}', parseInt('{{ task.duration }}'))" class="task-btn btn-play">
+                                <i data-lucide="play" style="width: 13px; height: 13px;"></i> Start
+                            </button>
+                            <button onclick="enterFocusMode('{{ task.id }}', '{{ task.title|escapejs }}', parseInt('{{ task.duration }}'))" class="task-btn btn-play" style="background: rgba(var(--color-primary-rgb), 0.25); border-color: var(--color-primary); color: white;" title="Distraction-Free Focus">
+                                <i data-lucide="maximize-2" style="width: 13px; height: 13px;"></i> Focus
+                            </button>
+                            <button id="taskPauseBtn{{ task.id }}" onclick="pauseTaskTimer('{{ task.id }}')" class="task-btn btn-pause" style="display: none;">
+                                <i data-lucide="pause" style="width: 13px; height: 13px;"></i> Pause
+                            </button>
+                            <a href="{% url 'complete' task.id %}" style="flex:1; text-decoration: none;">
+                                <button class="task-btn btn-complete" style="width: 100%;">
+                                    <i data-lucide="check" style="width: 13px; height: 13px;"></i> Done
+                                </button>
+                            </a>
+                        {% else %}
+                            <div style="text-align: center; color: var(--button-success); font-size: 0.85rem; font-weight: bold; width: 100%; display: flex; align-items: center; justify-content: center; gap: 4px; padding: 4px 0;">
+                                <i data-lucide="check-circle" style="width: 16px; height: 16px;"></i> Completed
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+                {% empty %}
+                <div class="glass-card" style="grid-column: 1 / -1; text-align: center; padding: 40px; color: var(--text-muted);">
+                    <i data-lucide="inbox" style="width: 40px; height: 40px; margin-bottom: 10px; opacity: 0.5;"></i>
+                    <p>No tasks configured. Click "Create Task" above to map your schedule!</p>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+
+        <!-- --- RIGHT SIDEBAR (TODAY'S PLAN) --- -->
+        <div class="right-sidebar">
+            <div class="glass-card plan-card">
+                <div class="rightbar-header">
+                    <i data-lucide="check-square" style="color: var(--color-primary);"></i>
+                    <h2>Today's Plan</h2>
+                </div>
+
+                <!-- Input Box -->
+                <div class="plan-input-group">
+                    <input type="text" id="planInput" class="plan-input" placeholder="Type a task point...">
+                    <button onclick="addPlanItem()" class="btn-square" title="Add Item">
+                        <i data-lucide="plus" style="width: 18px; height: 18px;"></i>
+                    </button>
+                </div>
+
+                <!-- Checklist Wrapper -->
+                <div class="plan-list-wrapper">
+                    <!-- Checklist -->
+                    <ul id="planList" class="plan-list"></ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- --- CREATE TASK MODAL --- -->
+    <div id="addModal" class="modal-overlay">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Create New Task</h3>
+                <button onclick="closeAddModal()" class="btn-close-modal">
+                    <i data-lucide="x"></i>
+                </button>
+            </div>
+            <form method="POST">
+                {% csrf_token %}
+                <div class="modal-form-group">
+                    <label for="createTitle">Task Name</label>
+                    <input type="text" id="createTitle" name="title" class="modal-input" placeholder="e.g. Code Review" required>
+                </div>
+                <div class="modal-form-group">
+                    <label for="createDuration">Duration (minutes)</label>
+                    <input type="number" id="createDuration" name="duration" class="modal-input" placeholder="e.g. 45" required>
+                </div>
+                <div class="modal-form-group">
+                    <label for="createAssignedDate">Assigned Date</label>
+                    <input type="date" id="createAssignedDate" name="assigned_date" class="modal-input" required>
+                </div>
+                <div class="modal-form-group">
+                    <label for="createRules">Rules / Guidelines</label>
+                    <textarea id="createRules" name="rules" class="modal-input" placeholder="e.g. No notifications, stay offline"></textarea>
+                </div>
+                <div class="modal-actions">
+                    <button type="button" onclick="closeAddModal()" class="btn-cancel">Cancel</button>
+                    <button type="submit" class="btn-primary">Create Task</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- --- EDIT TASK MODAL --- -->
+    <div id="editModal" class="modal-overlay">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Edit Task Details</h3>
+                <button onclick="closeEditModal()" class="btn-close-modal">
+                    <i data-lucide="x"></i>
+                </button>
+            </div>
+            <form id="editForm" method="POST">
+                {% csrf_token %}
+                <div class="modal-form-group">
+                    <label for="editTitle">Task Name</label>
+                    <input type="text" id="editTitle" name="title" class="modal-input" required>
+                </div>
+                <div class="modal-form-group">
+                    <label for="editDuration">Duration (minutes)</label>
+                    <input type="number" id="editDuration" name="duration" class="modal-input" required>
+                </div>
+                <div class="modal-form-group">
+                    <label for="editAssignedDate">Assigned Date</label>
+                    <input type="date" id="editAssignedDate" name="assigned_date" class="modal-input" required>
+                </div>
+                <div class="modal-form-group">
+                    <label for="editRules">Rules / Guidelines</label>
+                    <textarea id="editRules" name="rules" class="modal-input"></textarea>
+                </div>
+                <div class="modal-actions">
+                    <button type="button" onclick="closeEditModal()" class="btn-cancel">Cancel</button>
+                    <button type="submit" class="btn-primary">Save Changes</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- --- DELETE CONFIRMATION MODAL --- -->
+    <div id="deleteModal" class="modal-overlay">
+        <div class="modal-content" style="max-width: 380px;">
+            <div class="modal-header">
+                <h3>Delete Task?</h3>
+                <button onclick="closeDeleteModal()" class="btn-close-modal">
+                    <i data-lucide="x"></i>
+                </button>
+            </div>
+            <p style="font-size: 0.9rem; color: var(--text-muted); line-height: 1.4;">
+                Are you sure you want to delete this task? This action is permanent and cannot be undone.
+            </p>
+            <div class="modal-actions">
+                <button type="button" onclick="closeDeleteModal()" class="btn-cancel">Cancel</button>
+                <button type="button" onclick="executeDelete()" class="btn-danger">Delete</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- --- FULLSCREEN FOCUS MODE OVERLAY --- -->
+    <div id="focusModeOverlay" class="modal-overlay" style="position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: radial-gradient(circle at top, #130626 0%, #06010d 100%); z-index: 500; display: flex; flex-direction: column; align-items: center; justify-content: center; backdrop-filter: blur(25px); -webkit-backdrop-filter: blur(25px); opacity: 0; pointer-events: none; transition: opacity 0.5s cubic-bezier(0.4, 0, 0.2, 1);">
+        
+        <!-- Ambient glowing blobs -->
+        <div class="glow-blob glow-blob-1" style="width: 550px; height: 550px; background: radial-gradient(circle, rgba(var(--color-primary-rgb), 0.2) 0%, rgba(0,0,0,0) 70%);"></div>
+        
+        <div style="text-align: center; max-width: 600px; padding: 30px; position: relative; z-index: 510; display: flex; flex-direction: column; align-items: center; gap: 24px;">
+            <div>
+                <div style="font-size: 0.85rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 2px;">⚡ Focus Session Active</div>
+                <h2 id="focusModeTaskTitle" style="font-family: 'Outfit'; font-size: 2.2rem; font-weight: 800; margin-top: 6px; text-shadow: 0 0 15px rgba(var(--color-primary-rgb), 0.5);">Task Title</h2>
+            </div>
+            
+            <div style="position: relative; width: 220px; height: 220px; display: flex; align-items: center; justify-content: center;">
+                <svg width="220" height="220" viewBox="0 0 220 220" style="transform: rotate(-90deg); filter: drop-shadow(0 0 10px rgba(var(--color-primary-rgb), 0.35));">
+                    <circle cx="110" cy="110" r="95" stroke="rgba(255,255,255,0.03)" stroke-width="10" fill="transparent"/>
+                    <circle id="focusModeProgressRing" cx="110" cy="110" r="95" stroke="var(--color-primary)" stroke-width="10" fill="transparent" stroke-dasharray="596.9" stroke-dashoffset="0" stroke-linecap="round" style="transition: stroke-dashoffset 1s linear;"/>
+                </svg>
+                <div style="position: absolute; display: flex; flex-direction: column; align-items: center;">
+                    <span id="focusModeTimerClock" style="font-family: monospace; font-size: 2.5rem; font-weight: 700; color: white;">00:00</span>
+                    <span id="focusModePercent" style="font-size: 0.85rem; color: var(--text-muted); margin-top: 4px;">0% done</span>
+                </div>
+            </div>
+            
+            <div style="width: 320px;">
+                <div class="progress-bar-bg" style="height: 8px; margin: 0;">
+                    <div id="focusModeBarFill" class="progress-bar-fill" style="width: 100%;"></div>
+                </div>
+            </div>
+            
+            <div style="min-height: 55px; display: flex; align-items: center; justify-content: center;">
+                <p id="focusModeQuote" style="font-size: 1rem; font-style: italic; color: var(--text-muted); text-align: center; line-height: 1.5; font-family: 'Outfit'; transition: opacity 0.3s ease;">"Believe you can and you're halfway there."</p>
+            </div>
+            
+            <div style="display: flex; gap: 16px; align-items: center; flex-wrap: wrap; justify-content: center;">
+                <button id="focusModePauseBtn" onclick="toggleFocusModeTimer()" class="btn-primary" style="padding: 12px 28px; border-radius: 50px; font-size: 1rem;" title="Pause Focus">
+                    <i id="focusModePauseIcon" data-lucide="pause" style="width: 18px; height: 18px;"></i>
+                    <span id="focusModePauseLabel">Pause</span>
+                </button>
+                <button onclick="completeFocusModeTask()" class="task-btn btn-complete" style="padding: 12px 28px; border-radius: 50px; font-size: 1rem; width: auto;" title="Finish Session">
+                    <i data-lucide="check" style="width: 18px; height: 18px;"></i> Finish
+                </button>
+                <button onclick="exitFocusMode()" class="btn-cancel" style="padding: 12px 20px; border-radius: 50px; border: 1px solid rgba(255,255,255,0.1); display: flex; align-items: center; justify-content: center; gap: 6px;" title="Exit Focus Mode">
+                    <i data-lucide="log-out" style="width: 16px; height: 16px;"></i> Exit
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- --- DATE TASKS POPUP MODAL --- -->
+    <div id="dateTasksModal" class="modal-overlay">
+        <div class="modal-content" style="max-width: 450px;">
+            <div class="modal-header">
+                <h3 id="dateTasksModalTitle">Tasks for Date</h3>
+                <button onclick="closeDateTasksModal()" class="btn-close-modal">
+                    <i data-lucide="x"></i>
+                </button>
+            </div>
+            <div id="dateTasksList" style="display: flex; flex-direction: column; gap: 12px; max-height: 300px; overflow-y: auto; margin-top: 10px;">
+                <!-- Dynamic list of tasks -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Notifications Container -->
+    <div id="toastContainer" class="toast-container"></div>
+
+    <!-- Inject Django Tasks data as JSON for safe handling in script -->
+    <script id="django-tasks-data" type="application/json">
+      [
+        {% for task in tasks %}
+        {
+          "id": {{ task.id }},
+          "title": "{{ task.title|escapejs }}",
+          "duration": {{ task.duration }},
+          "completed": {% if task.completed %}true{% else %}false{% endif %},
+          "completed_at": {% if task.completed_at %}"{{ task.completed_at|date:'c' }}"{% else %}null{% endif %},
+          "created_at": "{{ task.created_at|date:'c' }}",
+          "assigned_date": "{{ task.assigned_date|date:'Y-m-d' }}"
+        }{% if not forloop.last %},{% endif %}
+        {% endfor %}
+      ]
+    </script>
+
+    <!-- Inject Django Focus Sessions data as JSON for safe handling in script -->
+    <script id="django-sessions-data" type="application/json">
+      [
+        {% for s in sessions %}
+        {
+          "id": {{ s.id }},
+          "task_title": "{{ s.task_title|escapejs }}",
+          "duration": {{ s.duration }},
+          "completed_at": "{{ s.completed_at|date:'c' }}"
+        }{% if not forloop.last %},{% endif %}
+        {% endfor %}
+      ]
+    </script>
+
+    <!-- Inject Django Plans data as JSON for safe handling in script -->
+    <script id="django-plans-data" type="application/json">
+      [
+        {% for item in plan_items %}
+        {
+          "id": {{ item.id }},
+          "text": "{{ item.text|escapejs }}",
+          "completed": {% if item.completed %}true{% else %}false{% endif %}
+        }{% if not forloop.last %},{% endif %}
+        {% endfor %}
+      ]
+    </script>
+
+    <!-- --- DYNAMIC LOGIC SCRIPT --- -->
+    <script>
+        // Global variables
+        let timers = {}; 
+        let activeTimer = null; 
+        let deleteTargetUrl = "";
+        let tasksData = [];
+        let sessionsData = [];
+
+        // Parse Tasks and Focus Sessions injected by Django
+        try {
+            tasksData = JSON.parse(document.getElementById('django-tasks-data').textContent);
+        } catch(e) {
+            console.error("Failed to parse tasks data:", e);
+        }
+        try {
+            sessionsData = JSON.parse(document.getElementById('django-sessions-data').textContent);
+        } catch(e) {
+            console.error("Failed to parse sessions data:", e);
         }
 
-    }, 1000);
-}
+        // --- THEME & PROFILE MANAGEMENT ---
+        function toggleThemeDropdown() {
+            document.getElementById('themeDropdown').classList.toggle('active');
+        }
 
-function pauseTimer(elementId) {
-    clearInterval(timers[elementId]);
-    delete timers[elementId];
-}
+        function toggleProfileDropdown() {
+            document.getElementById('profileDropdown').classList.toggle('active');
+        }
 
-/* ✅ TODAY PLAN (CHECKLIST) */
-window.onload = function() {
-    let data = JSON.parse(localStorage.getItem("plans")) || [];
-    data.forEach(item => createPlan(item));
-};
+        function changeTheme(themeName) {
+            document.body.className = '';
+            document.body.classList.add('theme-' + themeName);
+            localStorage.setItem('selectedTheme', themeName);
+            document.getElementById('themeDropdown').classList.remove('active');
+            
+            // Send fetch request to save theme preference in database
+            fetch('/settings/theme/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': '{{ csrf_token }}'
+                },
+                body: JSON.stringify({ theme: themeName })
+            }).catch(err => console.error(err));
 
-function addPlan() {
-    let input = document.getElementById("planInput");
-    let value = input.value;
+            // Adjust canvas particles based on theme
+            initCanvas();
+        }
 
-    if (!value) return;
+        // Close dropdowns on click outside
+        window.addEventListener('click', function(e) {
+            if (!e.target.closest('.action-icon-btn') && !e.target.closest('#themeDropdown')) {
+                document.getElementById('themeDropdown').classList.remove('active');
+            }
+            if (!e.target.closest('.avatar-header-btn') && !e.target.closest('#profileDropdown')) {
+                document.getElementById('profileDropdown').classList.remove('active');
+            }
+        });
 
-    createPlan(value);
+        // --- PARTICLE BACKGROUND CANVAS ---
+        const canvas = document.getElementById('particleCanvas');
+        const ctx = canvas.getContext('2d');
+        let particles = [];
+        let animationFrameId = null;
 
-    let data = JSON.parse(localStorage.getItem("plans")) || [];
-    data.push(value);
-    localStorage.setItem("plans", JSON.stringify(data));
+        function initCanvas() {
+            if (animationFrameId) {
+                cancelAnimationFrame(animationFrameId);
+            }
+            resizeCanvas();
+            particles = [];
+            
+            // Limit particles based on screen and theme
+            const theme = localStorage.getItem('selectedTheme') || 'violet';
+            const count = theme === 'violet' ? 60 : (theme === 'dark' ? 30 : 15);
+            
+            for(let i=0; i<count; i++) {
+                particles.push({
+                    x: Math.random() * canvas.width,
+                    y: Math.random() * canvas.height,
+                    size: Math.random() * 2 + 0.5,
+                    alpha: Math.random() * 0.5 + 0.1,
+                    speedY: -(Math.random() * 0.4 + 0.1),
+                    speedX: (Math.random() * 0.4 - 0.2)
+                });
+            }
+            animateParticles();
+        }
 
-    input.value = "";
-}
+        function resizeCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
 
-function createPlan(text) {
-    let li = document.createElement("li");
+        function animateParticles() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            
+            const theme = localStorage.getItem('selectedTheme') || 'violet';
+            let pColor = "168, 85, 247"; // Violet
+            if (theme === 'dark') pColor = "59, 130, 246"; // Blue
+            if (theme === 'light') pColor = "124, 58, 237"; // Purple
 
-    li.innerHTML = `
-        <span onclick="this.style.textDecoration='line-through'">${text}</span>
-        <button onclick="this.parentElement.remove()">❌</button>
-    `;
+            particles.forEach(p => {
+                ctx.beginPath();
+                ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+                ctx.fillStyle = `rgba(${pColor}, ${p.alpha})`;
+                ctx.fill();
 
-    document.getElementById("planList").appendChild(li);
-}
-</script>
+                p.y += p.speedY;
+                p.x += p.speedX;
 
+                if (p.y < 0) {
+                    p.y = canvas.height;
+                    p.x = Math.random() * canvas.width;
+                }
+                if (p.x < 0 || p.x > canvas.width) {
+                    p.speedX = -p.speedX;
+                }
+            });
+            animationFrameId = requestAnimationFrame(animateParticles);
+        }
+
+        window.addEventListener('resize', () => {
+            resizeCanvas();
+            if (window.innerWidth >= 1024) {
+                const sidebar = document.querySelector('.left-sidebar');
+                const backdrop = document.getElementById('sidebarBackdrop');
+                if (sidebar) sidebar.classList.remove('open');
+                if (backdrop) backdrop.classList.remove('active');
+            }
+        });
+
+        // --- GREETING ENGINE ---
+        function updateGreeting() {
+            const hr = new Date().getHours();
+            let greet = "Ready to Focus?";
+            if (hr < 12) greet = "☀️ Good Morning, Champ!";
+            else if (hr < 17) greet = "🔮 Good Afternoon, Focus!";
+            else greet = "🌌 Good Evening, Champion!";
+            document.getElementById('greetingText').textContent = greet;
+        }
+
+        // --- NOTIFICATIONS (TOAST + BROWSER + SOUND) ---
+        function showToast(message) {
+            const container = document.getElementById('toastContainer');
+            const toast = document.createElement('div');
+            toast.className = 'toast';
+            toast.innerHTML = `<i data-lucide="info" style="width: 16px; height: 16px;"></i> <span>${message}</span>`;
+            container.appendChild(toast);
+            lucide.createIcons();
+
+            setTimeout(() => toast.classList.add('show'), 50);
+            
+            setTimeout(() => {
+                toast.classList.remove('show');
+                setTimeout(() => toast.remove(), 400);
+            }, 3500);
+        }
+
+        function requestAlertPermission() {
+            if ("Notification" in window) {
+                Notification.requestPermission().then(permission => {
+                    if (permission === "granted") {
+                        showToast("Notifications enabled successfully!");
+                    } else {
+                        showToast("Notification permissions blocked.");
+                    }
+                });
+            } else {
+                showToast("Web alerts are not supported by this browser.");
+            }
+        }
+
+        // Synthesize electronic sound chime via Web Audio API (100% offline & robust)
+        function playChimeSound() {
+            try {
+                const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+                
+                // Play a double synth chime
+                const playNote = (freq, start, duration) => {
+                    const osc = audioCtx.createOscillator();
+                    const gain = audioCtx.createGain();
+                    
+                    osc.type = 'sine';
+                    osc.frequency.setValueAtTime(freq, start);
+                    
+                    gain.gain.setValueAtTime(0.3, start);
+                    gain.gain.exponentialRampToValueAtTime(0.01, start + duration - 0.05);
+                    
+                    osc.connect(gain);
+                    gain.connect(audioCtx.destination);
+                    
+                    osc.start(start);
+                    osc.stop(start + duration);
+                };
+                
+                const now = audioCtx.currentTime;
+                playNote(523.25, now, 0.4);      // C5
+                playNote(659.25, now + 0.15, 0.6); // E5
+            } catch (e) {
+                console.error("Sound chime failed to initialize:", e);
+            }
+        }
+
+        function triggerCompletionAlert(taskTitle) {
+            playChimeSound();
+            
+            if ("Notification" in window && Notification.permission === "granted") {
+                new Notification("⏳ Timer Over!", {
+                    body: `Session complete: "${taskTitle}". Great job!`,
+                    icon: "https://cdn-icons-png.flaticon.com/512/3135/3135715.png"
+                });
+            }
+            showToast(`🎉 focus session complete: "${taskTitle}"`);
+        }
+
+        // --- ACTIVE TIMER CROSS-PAGE PERSISTENCE ---
+        function startTaskTimer(id, title, mins) {
+            // Stop current if different
+            if (activeTimer && activeTimer.taskId !== id) {
+                pauseTaskTimer(activeTimer.taskId);
+            }
+
+            const totalSeconds = mins * 60;
+            const now = Date.now();
+
+            activeTimer = {
+                taskId: id,
+                title: title,
+                totalSeconds: totalSeconds,
+                startTime: now,
+                elapsedBeforePause: 0,
+                isPaused: false,
+                userId: parseInt('{{ request.user.id }}')
+            };
+
+            saveActiveTimerState();
+            startTimerCountdown();
+            showToast(`⚡ Started focus session: "${title}"`);
+        }
+
+        function pauseTaskTimer(id) {
+            if (!activeTimer || activeTimer.taskId !== id) return;
+
+            if (!activeTimer.isPaused) {
+                activeTimer.isPaused = true;
+                activeTimer.elapsedBeforePause += Math.floor((Date.now() - activeTimer.startTime) / 1000);
+                saveActiveTimerState();
+                
+                // UI updates
+                if (timers[id]) {
+                    clearInterval(timers[id].intervalId);
+                    delete timers[id];
+                }
+                updateTaskControlsUI(id, false);
+                updateBannerUI();
+            }
+        }
+
+        function resumeTaskTimer(id) {
+            if (!activeTimer || activeTimer.taskId !== id) return;
+
+            if (activeTimer.isPaused) {
+                activeTimer.isPaused = false;
+                activeTimer.startTime = Date.now();
+                saveActiveTimerState();
+                startTimerCountdown();
+            }
+        }
+
+        function toggleTopTimer() {
+            if (!activeTimer) return;
+            if (activeTimer.isPaused) {
+                resumeTaskTimer(activeTimer.taskId);
+            } else {
+                pauseTaskTimer(activeTimer.taskId);
+            }
+        }
+
+        function completeTopTask() {
+            if (!activeTimer) return;
+            const id = activeTimer.taskId;
+            // Clear timer state
+            clearActiveTimer();
+            // Redirect to mark completed
+            window.location.href = `/complete/${id}/`;
+        }
+
+        function clearActiveTimer() {
+            if (activeTimer) {
+                const id = activeTimer.taskId;
+                if (timers[id]) {
+                    if (timers[id].intervalId) {
+                        clearInterval(timers[id].intervalId);
+                    }
+                    delete timers[id];
+                }
+            }
+            activeTimer = null;
+            localStorage.removeItem('activeTimerState');
+            sessionStorage.removeItem('activeTimerState');
+            updateBannerUI();
+            
+            // Reset task progress displays
+            tasksData.forEach(t => {
+                if (!t.completed) {
+                    updateTaskCardProgressUI(t.id, t.duration * 60, t.duration * 60);
+                    updateTaskControlsUI(t.id, false);
+                }
+            });
+        }
+
+        function saveActiveTimerState() {
+            localStorage.setItem('activeTimerState', JSON.stringify(activeTimer));
+        }
+
+        function loadActiveTimerState() {
+            const saved = localStorage.getItem('activeTimerState');
+            if (saved) {
+                activeTimer = JSON.parse(saved);
+                
+                // User isolation check
+                if (activeTimer.userId !== parseInt('{{ request.user.id }}')) {
+                    clearActiveTimer();
+                    return;
+                }
+
+                // Verify if the task is still in our tasks list and not completed
+                const taskExists = tasksData.find(t => t.id == activeTimer.taskId && !t.completed);
+                if (!taskExists) {
+                    clearActiveTimer();
+                    return;
+                }
+
+                // Calculate remaining time
+                let remaining = 0;
+                if (activeTimer.isPaused) {
+                    remaining = activeTimer.totalSeconds - activeTimer.elapsedBeforePause;
+                } else {
+                    const elapsed = activeTimer.elapsedBeforePause + Math.floor((Date.now() - activeTimer.startTime) / 1000);
+                    remaining = activeTimer.totalSeconds - elapsed;
+                }
+
+                // If timer has already finished, clear it and do not restore
+                if (remaining <= 0) {
+                    clearActiveTimer();
+                    return;
+                }
+
+                // If not paused, calculate elapsed accurately using system clock
+                if (!activeTimer.isPaused) {
+                    startTimerCountdown();
+                } else {
+                    // Update static UI
+                    updateTaskCardProgressUI(activeTimer.taskId, remaining, activeTimer.totalSeconds);
+                    updateTaskControlsUI(activeTimer.taskId, false);
+                    updateBannerUI();
+                }
+            }
+        }
+
+        function startTimerCountdown() {
+            const id = activeTimer.taskId;
+            
+            if (timers[id]) {
+                if (timers[id].intervalId) {
+                    clearInterval(timers[id].intervalId);
+                }
+            }
+
+            updateTaskControlsUI(id, true);
+            updateBannerUI();
+
+            const tick = () => {
+                if (!activeTimer || activeTimer.isPaused) return;
+
+                const elapsedSinceStart = Math.floor((Date.now() - activeTimer.startTime) / 1000);
+                const currentElapsed = activeTimer.elapsedBeforePause + elapsedSinceStart;
+                const remaining = activeTimer.totalSeconds - currentElapsed;
+
+                if (remaining <= 0) {
+                    if (timers[id] && timers[id].intervalId) {
+                        clearInterval(timers[id].intervalId);
+                    }
+                    delete timers[id];
+                    triggerCompletionAlert(activeTimer.title);
+                    
+                    // If Focus Mode is active, remove active state flag before redirect
+                    localStorage.removeItem('focusModeActive');
+                    clearActiveTimer();
+                    
+                    // Automatically mark done
+                    window.location.href = `/complete/${id}/`;
+                    return;
+                }
+
+                updateTaskCardProgressUI(id, remaining, activeTimer.totalSeconds);
+                updateBannerUI(remaining);
+                
+                // Also update Focus Mode UI if focus mode is open
+                if (localStorage.getItem('focusModeActive') === 'true') {
+                    updateFocusModeProgressUI();
+                }
+            };
+
+            // Pre-initialize timers[id] object to avoid TypeErrors during initial tick
+            timers[id] = {
+                intervalId: null
+            };
+
+            // Run initial tick
+            tick();
+            
+            // Setup interval only if activeTimer is still running and same task
+            if (activeTimer && activeTimer.taskId === id && !activeTimer.isPaused) {
+                timers[id].intervalId = setInterval(tick, 1000);
+            }
+        }
+
+        // --- PROGRESS AND CARD UI SETTERS ---
+        function updateTaskCardProgressUI(id, remaining, total) {
+            const display = document.getElementById(`taskTimerDisplay${id}`);
+            const percentDisplay = document.getElementById(`taskPercentDisplay${id}`);
+            const fill = document.getElementById(`taskBarFill${id}`);
+
+            if (!display) return;
+
+            const m = Math.floor(remaining / 60);
+            const s = remaining % 60;
+            display.textContent = `${m < 10 ? '0' + m : m}:${s < 10 ? '0' + s : s}`;
+
+            const percent = Math.max(0, Math.min(100, (remaining / total) * 100));
+            if (fill) fill.style.width = percent + "%";
+            if (percentDisplay) percentDisplay.textContent = Math.round(100 - percent) + "% done";
+        }
+
+        function updateTaskControlsUI(id, isRunning) {
+            const playBtn = document.getElementById(`taskPlayBtn${id}`);
+            const pauseBtn = document.getElementById(`taskPauseBtn${id}`);
+
+            if (!playBtn || !pauseBtn) return;
+
+            if (isRunning) {
+                playBtn.style.display = 'none';
+                pauseBtn.style.display = 'flex';
+            } else {
+                playBtn.style.display = 'flex';
+                pauseBtn.style.display = 'none';
+            }
+        }
+
+        function updateBannerUI(customRemaining) {
+            const banner = document.getElementById('topBannerTimer');
+            const titleSpan = document.getElementById('topBannerTaskTitle');
+            const clockSpan = document.getElementById('topBannerClock');
+            const icon = document.getElementById('topBannerPauseIcon');
+
+            if (!activeTimer) {
+                banner.classList.remove('visible');
+                banner.style.display = 'none';
+                return;
+            }
+
+            banner.style.display = 'flex';
+
+            banner.classList.add('visible');
+            titleSpan.textContent = activeTimer.title;
+
+            // Pause/Resume icon
+            if (activeTimer.isPaused) {
+                icon.setAttribute('data-lucide', 'play');
+            } else {
+                icon.setAttribute('data-lucide', 'pause');
+            }
+            lucide.createIcons();
+
+            let remaining = customRemaining;
+            if (remaining === undefined) {
+                if (activeTimer.isPaused) {
+                    remaining = activeTimer.totalSeconds - activeTimer.elapsedBeforePause;
+                } else {
+                    const elapsed = activeTimer.elapsedBeforePause + Math.floor((Date.now() - activeTimer.startTime) / 1000);
+                    remaining = Math.max(0, activeTimer.totalSeconds - elapsed);
+                }
+            }
+
+            const m = Math.floor(remaining / 60);
+            const s = remaining % 60;
+            clockSpan.textContent = `${m < 10 ? '0' + m : m}:${s < 10 ? '0' + s : s}`;
+        }
+
+        // --- ANALYTICS DASHBOARD CHART ENGINE ---
+        function renderCharts() {
+            // Get stats from Tasks Data
+            const today = new Date().toDateString();
+            
+            // 1. Completed Today
+            let completedTodayCount = 0;
+            tasksData.forEach(t => {
+                if (t.completed && t.completed_at) {
+                    const cDate = new Date(t.completed_at).toDateString();
+                    if (cDate === today) completedTodayCount++;
+                }
+            });
+            document.getElementById('statsTodayCompletions').textContent = completedTodayCount;
+
+            // 2. Weekly Focus Hours & Focus per day (from sessionsData)
+            const focusPerDay = [0, 0, 0, 0, 0, 0, 0]; // Sun to Sat
+            const weekdays = [];
+            const d = new Date();
+            
+            // Build weekday labels for last 7 days
+            for (let i = 6; i >= 0; i--) {
+                const tempDate = new Date();
+                tempDate.setDate(d.getDate() - i);
+                weekdays.push(tempDate.toLocaleDateString('en-US', { weekday: 'short' }));
+            }
+
+            let totalWeeklyMins = 0;
+            const sevenDaysAgo = new Date();
+            sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
+            sevenDaysAgo.setHours(0, 0, 0, 0);
+
+            sessionsData.forEach(s => {
+                const compTime = new Date(s.completed_at);
+                if (compTime >= sevenDaysAgo) {
+                    totalWeeklyMins += s.duration;
+                    
+                    // Find matching index in weekdays list
+                    const dayString = compTime.toLocaleDateString('en-US', { weekday: 'short' });
+                    const idx = weekdays.indexOf(dayString);
+                    if (idx !== -1) {
+                        focusPerDay[idx] += (s.duration / 60);
+                    }
+                }
+            });
+            document.getElementById('statsWeeklyHours').textContent = (totalWeeklyMins / 60).toFixed(1);
+
+            // 3. Completion Rate
+            const totalTasks = tasksData.length;
+            const completedTasks = tasksData.filter(t => t.completed).length;
+            const rate = totalTasks > 0 ? Math.round((completedTasks / totalTasks) * 100) : 0;
+            document.getElementById('statsCompletionRate').textContent = rate + "%";
+
+            // -- Chart 1: Focus Hours (Bar) --
+            const ctx1 = document.getElementById('focusHoursChart').getContext('2d');
+            
+            const isThemeLight = document.body.classList.contains('theme-light');
+            const gridColor = isThemeLight ? 'rgba(0,0,0,0.06)' : 'rgba(255,255,255,0.06)';
+            const tColor = isThemeLight ? '#475569' : '#a78bfa';
+
+            new Chart(ctx1, {
+                type: 'bar',
+                data: {
+                    labels: weekdays,
+                    datasets: [{
+                        label: 'Focus Hours',
+                        data: focusPerDay,
+                        backgroundColor: 'rgba(168, 85, 247, 0.6)',
+                        borderColor: '#a855f7',
+                        borderWidth: 1,
+                        borderRadius: 6,
+                        hoverBackgroundColor: '#c084fc'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: false }
+                    },
+                    scales: {
+                        x: { grid: { color: gridColor }, ticks: { color: tColor } },
+                        y: { grid: { color: gridColor }, ticks: { color: tColor }, beginAtZero: true }
+                    }
+                }
+            });
+
+            // -- Chart 2: Task Ratios (Doughnut) --
+            const ctx2 = document.getElementById('taskCompletionChart').getContext('2d');
+            new Chart(ctx2, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Completed', 'Pending'],
+                    datasets: [{
+                        data: [completedTasks, totalTasks - completedTasks],
+                        backgroundColor: ['#22c55e', 'rgba(168, 85, 247, 0.2)'],
+                        borderColor: ['#22c55e', 'rgba(168, 85, 247, 0.4)'],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                            labels: { color: tColor, font: { size: 10 } }
+                        }
+                    },
+                    cutout: '70%'
+                }
+            });
+        }
+
+        // --- GAMIFICATION SYSTEM ---
+        function initGamification() {
+            const xp = {{ profile.xp|default:0 }};
+            const streak = {{ profile.streak|default:0 }};
+            let badges = [];
+            try {
+                badges = JSON.parse('{{ profile.badges|escapejs }}') || [];
+            } catch (e) {
+                badges = [];
+            }
+
+            // XP calculations
+            const lvl = Math.floor(xp / 1000) + 1;
+            const xpInCurrentLvl = xp % 1000;
+            const fillPct = (xpInCurrentLvl / 1000) * 100;
+
+            document.getElementById('userLevelBadge').textContent = `LEVEL ${lvl}`;
+            document.getElementById('userXPDisplay').textContent = `${xpInCurrentLvl} XP`;
+            document.getElementById('userXPBar').style.width = `${fillPct}%`;
+
+            // Streaks
+            document.getElementById('streakCount').textContent = streak;
+            document.getElementById('statsDailyStreak').textContent = streak;
+
+            // Badges
+            badges.forEach(bId => {
+                const badgeSlot = document.getElementById(bId);
+                if (badgeSlot) {
+                    badgeSlot.classList.add('unlocked');
+                }
+            });
+        }
+
+        function updateStreakCount() {}
+        function checkStreakOnLoad() {}
+        function updateBadges() {}
+
+        // --- TODAY'S PLAN CHECKLIST (DRAG AND DROP) ---
+        let planItems = [];
+        try {
+            planItems = JSON.parse(document.getElementById('django-plans-data').textContent) || [];
+        } catch (e) {
+            planItems = [];
+        }
+
+        function renderPlanList() {
+            const list = document.getElementById('planList');
+            list.innerHTML = '';
+            
+            planItems.forEach((item, idx) => {
+                const li = document.createElement('li');
+                li.className = 'plan-item';
+                li.draggable = true;
+                li.dataset.index = idx;
+                li.dataset.id = item.id;
+                
+                li.innerHTML = `
+                    <div class="plan-item-left">
+                        <span class="plan-drag-handle"><i data-lucide="grip-vertical" style="width: 14px; height: 14px;"></i></span>
+                        <input type="checkbox" class="plan-checkbox" ${item.completed ? 'checked' : ''} onchange="togglePlanCheck(${idx})">
+                        <span class="plan-text ${item.completed ? 'completed' : ''}">${item.text}</span>
+                    </div>
+                    <button class="btn-delete-plan" onclick="deletePlanItem(${idx})">
+                        <i data-lucide="x" style="width: 14px; height: 14px;"></i>
+                    </button>
+                `;
+                
+                // Drag Events
+                li.addEventListener('dragstart', handleDragStart);
+                li.addEventListener('dragover', handleDragOver);
+                li.addEventListener('drop', handleDrop);
+                li.addEventListener('dragend', handleDragEnd);
+                
+                list.appendChild(li);
+            });
+            lucide.createIcons();
+        }
+
+        function addPlanItem() {
+            const input = document.getElementById('planInput');
+            const txt = input.value.trim();
+            if (!txt) return;
+
+            fetch('{% url "plan_add" %}', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': '{{ csrf_token }}'
+                },
+                body: JSON.stringify({ text: txt })
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.status === 'success') {
+                    planItems.push({ id: data.id, text: data.text, completed: data.completed });
+                    input.value = '';
+                    renderPlanList();
+                    showToast("Plan point added.");
+                }
+            })
+            .catch(err => console.error(err));
+        }
+
+        function togglePlanCheck(idx) {
+            const item = planItems[idx];
+            fetch(`/plan/toggle/${item.id}/`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': '{{ csrf_token }}'
+                }
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.status === 'success') {
+                    item.completed = data.completed;
+                    renderPlanList();
+                }
+            })
+            .catch(err => console.error(err));
+        }
+
+        function deletePlanItem(idx) {
+            const item = planItems[idx];
+            fetch(`/plan/delete/${item.id}/`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': '{{ csrf_token }}'
+                }
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.status === 'success') {
+                    planItems.splice(idx, 1);
+                    renderPlanList();
+                    showToast("Plan point removed.");
+                }
+            })
+            .catch(err => console.error(err));
+        }
+
+        // HTML5 Drag and Drop Handlers
+        let dragSourceIndex = null;
+
+        function handleDragStart(e) {
+            dragSourceIndex = this.dataset.index;
+            this.classList.add('dragging');
+            e.dataTransfer.effectAllowed = 'move';
+        }
+
+        // Allow drop
+        function handleDragOver(e) {
+            e.preventDefault();
+            e.dataTransfer.dropEffect = 'move';
+        }
+
+        function handleDrop(e) {
+            e.preventDefault();
+            const targetIdx = this.dataset.index;
+            
+            if (dragSourceIndex !== null && dragSourceIndex !== targetIdx) {
+                const removed = planItems.splice(dragSourceIndex, 1)[0];
+                planItems.splice(targetIdx, 0, removed);
+                renderPlanList();
+
+                const ids = planItems.map(item => item.id);
+                fetch('{% url "plan_reorder" %}', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRFToken': '{{ csrf_token }}'
+                    },
+                    body: JSON.stringify({ item_ids: ids })
+                }).catch(err => console.error(err));
+            }
+        }
+
+        function handleDragEnd() {
+            this.classList.remove('dragging');
+            dragSourceIndex = null;
+        }
+
+        document.getElementById('planInput').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') addPlanItem();
+        });
+
+        // --- MODAL UTILS ---
+        function openAddModal() {
+            document.getElementById('addModal').classList.add('active');
+        }
+        function closeAddModal() {
+            document.getElementById('addModal').classList.remove('active');
+        }
+
+        function openEditModal(id, title, duration, rules, assignedDate) {
+            const form = document.getElementById('editForm');
+            form.action = `/edit/${id}/`;
+            document.getElementById('editTitle').value = title;
+            document.getElementById('editDuration').value = duration;
+            document.getElementById('editRules').value = rules;
+            if (assignedDate) {
+                document.getElementById('editAssignedDate').value = assignedDate;
+            }
+            document.getElementById('editModal').classList.add('active');
+        }
+        function closeEditModal() {
+            document.getElementById('editModal').classList.remove('active');
+        }
+
+        function openDeleteModal(url) {
+            deleteTargetUrl = url;
+            document.getElementById('deleteModal').classList.add('active');
+        }
+        function closeDeleteModal() {
+            document.getElementById('deleteModal').classList.remove('active');
+        }
+        function toggleLeftSidebar() {
+            const sidebar = document.querySelector('.left-sidebar');
+            const backdrop = document.getElementById('sidebarBackdrop');
+            if (sidebar && backdrop) {
+                sidebar.classList.toggle('open');
+                backdrop.classList.toggle('active');
+            }
+        }
+        function scrollToCalendar(event) {
+            if (event) event.preventDefault();
+            const el = document.getElementById('focusCalendarSection');
+            if (el) {
+                const sidebar = document.querySelector('.left-sidebar');
+                const backdrop = document.getElementById('sidebarBackdrop');
+                if (sidebar && sidebar.classList.contains('open')) {
+                    sidebar.classList.remove('open');
+                    backdrop.classList.remove('active');
+                }
+                el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                const originalBorder = el.style.borderColor;
+                const originalShadow = el.style.boxShadow;
+                el.style.borderColor = 'var(--color-primary)';
+                el.style.boxShadow = 'var(--glow-shadow)';
+                setTimeout(() => {
+                    el.style.borderColor = originalBorder;
+                    el.style.boxShadow = originalShadow;
+                }, 1500);
+            }
+        }
+        function executeDelete() {
+            if (deleteTargetUrl) {
+                // Clear active timer if deleting the currently running task
+                if (activeTimer) {
+                    const taskDelId = deleteTargetUrl.match(/\/delete\/(\d+)\//);
+                    if (taskDelId && taskDelId[1] == activeTimer.taskId) {
+                        clearActiveTimer();
+                    }
+                }
+                window.location.href = deleteTargetUrl;
+            }
+        }
+
+        // --- MOTIVATIONAL QUOTES ---
+        const focusQuotes = [
+            "Concentrate all your thoughts upon the work at hand. Stay focused.",
+            "Your focus determines your reality. Stay dedicated, stay clear.",
+            "Focus is a muscle, and you are building it right now.",
+            "Deep work is the superpower of the 21st century.",
+            "Simplicity and focus. Once you get there, you can move mountains.",
+            "One focus session can change the trajectory of your entire day.",
+            "No distractions. No excuses. Just progress.",
+            "Great things are done by a series of small things brought together.",
+            "You are capable of focusing longer than you think.",
+            "The secret of success is to focus on one thing at a time."
+        ];
+
+        let focusQuotesInterval = null;
+
+        // --- DISTRACTION-FREE FOCUS MODE ---
+        function enterFocusMode(id, title, mins) {
+            if (!activeTimer || activeTimer.taskId !== id) {
+                startTaskTimer(id, title, mins);
+            }
+            
+            localStorage.setItem('focusModeActive', 'true');
+            
+            const overlay = document.getElementById('focusModeOverlay');
+            if (overlay) {
+                overlay.classList.add('active');
+            }
+            
+            document.getElementById('focusModeTaskTitle').textContent = title;
+            
+            // Reset quotes rotation
+            if (focusQuotesInterval) clearInterval(focusQuotesInterval);
+            cycleQuotes();
+            focusQuotesInterval = setInterval(cycleQuotes, 10000);
+            
+            updateFocusModeProgressUI();
+        }
+
+        function exitFocusMode() {
+            localStorage.removeItem('focusModeActive');
+            const overlay = document.getElementById('focusModeOverlay');
+            if (overlay) {
+                overlay.classList.remove('active');
+            }
+            if (focusQuotesInterval) {
+                clearInterval(focusQuotesInterval);
+            }
+            location.reload();
+        }
+
+        function cycleQuotes() {
+            const el = document.getElementById('focusModeQuote');
+            if (!el) return;
+            const rand = Math.floor(Math.random() * focusQuotes.length);
+            el.style.opacity = '0';
+            setTimeout(() => {
+                el.textContent = `"${focusQuotes[rand]}"`;
+                el.style.opacity = '1';
+            }, 300);
+        }
+
+        function updateFocusModeProgressUI() {
+            if (!activeTimer) return;
+            
+            const icon = document.getElementById('focusModePauseIcon');
+            const label = document.getElementById('focusModePauseLabel');
+            if (icon && label) {
+                if (activeTimer.isPaused) {
+                    icon.setAttribute('data-lucide', 'play');
+                    label.textContent = "Resume";
+                } else {
+                    icon.setAttribute('data-lucide', 'pause');
+                    label.textContent = "Pause";
+                }
+                lucide.createIcons();
+            }
+            
+            let remaining;
+            if (activeTimer.isPaused) {
+                remaining = activeTimer.totalSeconds - activeTimer.elapsedBeforePause;
+            } else {
+                const elapsed = activeTimer.elapsedBeforePause + Math.floor((Date.now() - activeTimer.startTime) / 1000);
+                remaining = Math.max(0, activeTimer.totalSeconds - elapsed);
+            }
+            
+            const m = Math.floor(remaining / 60);
+            const s = remaining % 60;
+            document.getElementById('focusModeTimerClock').textContent = `${m < 10 ? '0' + m : m}:${s < 10 ? '0' + s : s}`;
+            
+            const pctDone = Math.round(((activeTimer.totalSeconds - remaining) / activeTimer.totalSeconds) * 100);
+            document.getElementById('focusModePercent').textContent = `${pctDone}% done`;
+            
+            const fill = document.getElementById('focusModeBarFill');
+            if (fill) fill.style.width = (remaining / activeTimer.totalSeconds) * 100 + "%";
+            
+            const ring = document.getElementById('focusModeProgressRing');
+            if (ring) {
+                const circ = 596.9; // 2 * PI * r (r=95)
+                const offset = circ - (pctDone / 100) * circ;
+                ring.style.strokeDashoffset = offset;
+            }
+        }
+
+        function toggleFocusModeTimer() {
+            toggleTopTimer();
+            updateFocusModeProgressUI();
+        }
+
+        function completeFocusModeTask() {
+            completeTopTask();
+        }
+
+        // --- MONTHLY CALENDAR VIEW ---
+        let currentYear = new Date().getFullYear();
+        let currentMonth = new Date().getMonth();
+
+        function renderCalendar() {
+            const monthNames = [
+                "January", "February", "March", "April", "May", "June",
+                "July", "August", "September", "October", "November", "December"
+            ];
+            
+            const headerSpan = document.getElementById('calendarMonthYear');
+            if (headerSpan) {
+                headerSpan.textContent = `${monthNames[currentMonth]} ${currentYear}`;
+            }
+            
+            const grid = document.getElementById('calendarDaysGrid');
+            if (!grid) return;
+            grid.innerHTML = '';
+            
+            const firstDayIndex = new Date(currentYear, currentMonth, 1).getDay();
+            const totalDays = new Date(currentYear, currentMonth + 1, 0).getDate();
+            
+            for (let i = 0; i < firstDayIndex; i++) {
+                const emptyCell = document.createElement('div');
+                emptyCell.className = 'calendar-day-box empty';
+                grid.appendChild(emptyCell);
+            }
+            
+            const today = new Date();
+            
+            for (let day = 1; day <= totalDays; day++) {
+                const dayBox = document.createElement('div');
+                dayBox.className = 'calendar-day-box';
+                
+                if (day === today.getDate() && currentMonth === today.getMonth() && currentYear === today.getFullYear()) {
+                    dayBox.classList.add('today');
+                }
+                
+                const dateStr = `${currentYear}-${(currentMonth + 1).toString().padStart(2, '0')}-${day.toString().padStart(2, '0')}`;
+                const dayTasks = tasksData.filter(t => t.assigned_date === dateStr);
+                
+                dayBox.innerHTML = `
+                    <span class="calendar-day-number">${day}</span>
+                    <div class="calendar-dots-container">
+                        ${dayTasks.map(t => `<div class="calendar-dot ${t.completed ? 'completed' : 'pending'}" title="${t.title}"></div>`).join('')}
+                    </div>
+                `;
+                
+                dayBox.onclick = () => showDateTasks(dateStr, dayTasks);
+                grid.appendChild(dayBox);
+            }
+            lucide.createIcons();
+        }
+
+        // Previous and Next Month navigators
+        function prevMonth() {
+            currentMonth--;
+            if (currentMonth < 0) {
+                currentMonth = 11;
+                currentYear--;
+            }
+            renderCalendar();
+        }
+
+        function nextMonth() {
+            currentMonth++;
+            if (currentMonth > 11) {
+                currentMonth = 0;
+                currentYear++;
+            }
+            renderCalendar();
+        }
+
+        function showDateTasks(dateStr, dayTasks) {
+            const modal = document.getElementById('dateTasksModal');
+            const title = document.getElementById('dateTasksModalTitle');
+            const list = document.getElementById('dateTasksList');
+            
+            if (!modal || !title || !list) return;
+            
+            const d = new Date(dateStr.replace(/-/g, "/"));
+            title.textContent = d.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
+            
+            list.innerHTML = '';
+            
+            if (dayTasks.length === 0) {
+                list.innerHTML = `<p style="text-align: center; color: var(--text-muted); font-size: 0.85rem; padding: 20px;">No tasks scheduled for this day.</p>`;
+            } else {
+                dayTasks.forEach(t => {
+                    const item = document.createElement('div');
+                    item.style = `background: rgba(0,0,0,0.2); border: 1px solid var(--card-border); border-radius: 10px; padding: 12px; display: flex; justify-content: space-between; align-items: center;`;
+                    item.innerHTML = `
+                        <div>
+                            <strong style="color: var(--text-main); font-size: 0.95rem; ${t.completed ? 'text-decoration: line-through;' : ''}">${t.title}</strong>
+                            <div style="font-size: 0.75rem; color: var(--text-muted); margin-top: 3px;">⏳ ${t.duration} Mins</div>
+                        </div>
+                        <div>
+                            ${t.completed 
+                                ? `<span style="color: #22c55e; font-size: 0.8rem; font-weight: bold; display: flex; align-items: center; gap: 4px;"><i data-lucide="check-circle" style="width: 14px; height: 14px;"></i> Done</span>` 
+                                : `<span style="color: var(--color-primary); font-size: 0.8rem; font-weight: bold; display: flex; align-items: center; gap: 4px;"><i data-lucide="clock" style="width: 14px; height: 14px;"></i> Pending</span>`}
+                        </div>
+                    `;
+                    list.appendChild(item);
+                });
+            }
+            modal.classList.add('active');
+            lucide.createIcons();
+        }
+
+        function closeDateTasksModal() {
+            document.getElementById('dateTasksModal').classList.remove('active');
+        }
+
+        // --- STATISTICS AND DASHBOARD CALCULATIONS ---
+        function renderDashboardStats() {
+            let totalMins = 0;
+            let longestMins = 0;
+            
+            sessionsData.forEach(s => {
+                totalMins += s.duration;
+                if (s.duration > longestMins) {
+                    longestMins = s.duration;
+                }
+            });
+            
+            // Total Focus Hours
+            document.getElementById('statsTotalHours').textContent = (totalMins / 60).toFixed(1);
+            
+            // Longest Session
+            document.getElementById('statsLongestSession').textContent = `${longestMins}m`;
+            
+            // Weekly Focus Hours
+            let weeklyMins = 0;
+            const sevenDaysAgo = new Date();
+            sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
+            sevenDaysAgo.setHours(0, 0, 0, 0);
+            
+            sessionsData.forEach(s => {
+                const cTime = new Date(s.completed_at);
+                if (cTime >= sevenDaysAgo) {
+                    weeklyMins += s.duration;
+                }
+            });
+            document.getElementById('statsWeeklyHours').textContent = (weeklyMins / 60).toFixed(1);
+            
+            // Daily Streak calculation from sessionsData
+            function formatDateYYYYMMDD(d) {
+                const year = d.getFullYear();
+                const month = String(d.getMonth() + 1).padStart(2, '0');
+                const day = String(d.getDate()).padStart(2, '0');
+                return `${year}-${month}-${day}`;
+            }
+
+            let dates = [];
+            sessionsData.forEach(s => {
+                const dateStr = formatDateYYYYMMDD(new Date(s.completed_at));
+                if (!dates.includes(dateStr)) {
+                    dates.push(dateStr);
+                }
+            });
+            dates.sort((a, b) => new Date(b) - new Date(a));
+            
+            let calculatedStreak = 0;
+            if (dates.length > 0) {
+                const todayStr = formatDateYYYYMMDD(new Date());
+                const yesterday = new Date();
+                yesterday.setDate(yesterday.getDate() - 1);
+                const yesterdayStr = formatDateYYYYMMDD(yesterday);
+                
+                if (dates.includes(todayStr) || dates.includes(yesterdayStr)) {
+                    let currentDate = new Date(dates[0]);
+                    for (let i = 0; i < dates.length; i++) {
+                        const dateStr = dates[i];
+                        const expectedStr = formatDateYYYYMMDD(currentDate);
+                        if (dateStr === expectedStr) {
+                            calculatedStreak++;
+                            currentDate.setDate(currentDate.getDate() - 1);
+                        } else if (new Date(dateStr) < currentDate) {
+                            break;
+                        }
+                    }
+                }
+            }
+            document.getElementById('statsDailyStreak').textContent = calculatedStreak;
+            if (document.getElementById('streakCount')) {
+                document.getElementById('streakCount').textContent = calculatedStreak;
+            }
+        }
+
+        // --- APP INITIALIZER ---
+        window.onload = function() {
+            // Apply theme
+            const savedTheme = '{{ profile.theme_preference|default:"violet" }}';
+            changeTheme(savedTheme);
+
+            // Greet User
+            updateGreeting();
+
+            // Setup Dashboard Metrics and Charts
+            renderCharts();
+            renderDashboardStats();
+            
+            // Render Calendar
+            renderCalendar();
+            
+            // Default create modal date input to today
+            const dateInput = document.getElementById('createAssignedDate');
+            if (dateInput) {
+                dateInput.valueAsDate = new Date();
+            }
+
+            // Load Streaks, XP, Badges
+            checkStreakOnLoad();
+            initGamification();
+
+            // Render checklist
+            renderPlanList();
+
+            // Load and Sync persistent timer state
+            loadActiveTimerState();
+            
+            // Recover active Focus Mode if page reloaded
+            const focusActive = localStorage.getItem('focusModeActive');
+            if (focusActive) {
+                if (activeTimer) {
+                    enterFocusMode(activeTimer.taskId, activeTimer.title, activeTimer.totalSeconds / 60);
+                } else {
+                    localStorage.removeItem('focusModeActive');
+                }
+            }
+
+            // Initialize Lucide Icons
+            lucide.createIcons();
+        };
+    </script>
 </body>
 </html>
