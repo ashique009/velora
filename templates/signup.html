@@ -32,6 +32,21 @@
             padding: 0;
         }
 
+        /* Keyboard Focus Accessibility */
+        *:focus-visible {
+            outline: 2px solid var(--color-primary) !important;
+            outline-offset: 3px !important;
+        }
+
+        /* Targeted Transitions for Performance */
+        .btn-submit, .input-field, .auth-footer a {
+            transition: background 0.2s ease, border-color 0.2s ease, color 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .glass-card {
+            transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.3s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
         body {
             background: var(--bg-gradient);
             color: var(--text-main);
@@ -300,7 +315,14 @@
             canvas.width = window.innerWidth;
             canvas.height = window.innerHeight;
         }
-        window.addEventListener('resize', resizeCanvas);
+        let resizeTimeout;
+        window.addEventListener('resize', () => {
+            clearTimeout(resizeTimeout);
+            resizeTimeout = setTimeout(() => {
+                resizeCanvas();
+                initParticles();
+            }, 150);
+        });
         resizeCanvas();
 
         class Particle {

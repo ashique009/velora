@@ -16,7 +16,7 @@
             --card-border: rgba(168, 85, 247, 0.18);
             --card-border-hover: rgba(168, 85, 247, 0.35);
             --text-main: #f3f4f6;
-            --text-muted: #a78bfa;
+            --text-muted: #c084fc; /* Contrast violet */
             --color-primary: #a855f7;
             --color-primary-rgb: 168, 85, 247;
             --color-primary-hover: #c084fc;
@@ -26,10 +26,55 @@
             --button-danger: #ef4444;
         }
 
+        .theme-dark {
+            --bg-gradient: radial-gradient(circle at top, #121824 0%, #0b0f17 60%, #030508 100%);
+            --bg-color: #0b0f17;
+            --card-bg: rgba(17, 24, 39, 0.5);
+            --card-border: rgba(255, 255, 255, 0.08);
+            --card-border-hover: rgba(59, 130, 246, 0.3);
+            --text-main: #f8fafc;
+            --text-muted: #cbd5e1; /* Brighter slate */
+            --color-primary: #3b82f6;
+            --color-primary-rgb: 59, 130, 246;
+            --color-primary-hover: #60a5fa;
+            --glow-shadow: 0 0 20px rgba(59, 130, 246, 0.25);
+            --shadow-main: 0 8px 32px 0 rgba(0, 0, 0, 0.4);
+        }
+
+        .theme-light {
+            --bg-gradient: radial-gradient(circle at top, #f5f3ff 0%, #f1f5f9 60%, #e2e8f0 100%);
+            --bg-color: #f1f5f9;
+            --card-bg: rgba(255, 255, 255, 0.75);
+            --card-border: rgba(124, 58, 237, 0.12);
+            --card-border-hover: rgba(124, 58, 237, 0.3);
+            --text-main: #0f172a;
+            --text-muted: #475569; /* Darker slate */
+            --color-primary: #7c3aed;
+            --color-primary-rgb: 124, 58, 237;
+            --color-primary-hover: #6d28d9;
+            --glow-shadow: 0 0 15px rgba(124, 58, 237, 0.15);
+            --shadow-main: 0 8px 24px 0 rgba(124, 58, 237, 0.08);
+        }
+
         * {
             box-sizing: border-box;
             margin: 0;
             padding: 0;
+        }
+
+        /* Keyboard Focus Accessibility */
+        *:focus-visible {
+            outline: 2px solid var(--color-primary) !important;
+            outline-offset: 3px !important;
+        }
+
+        /* Targeted Transitions for Performance */
+        .btn, .badge-card, .btn-primary, .btn-secondary {
+            transition: background 0.2s ease, border-color 0.2s ease, color 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .glass-card {
+            transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.3s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.3s cubic-bezier(0.16, 1, 0.3, 1);
         }
 
         body {
@@ -323,16 +368,16 @@
             <h1>Velora</h1>
         </a>
         <div class="header-nav-group" style="display: flex; gap: 10px; align-items: center;">
-            <a href="{% url 'home' %}" class="btn btn-secondary" title="Dashboard">
+            <a href="{% url 'home' %}" class="btn btn-secondary" title="Dashboard" aria-label="Dashboard">
                 <i data-lucide="layout-dashboard"></i> <span class="nav-btn-text">Dashboard</span>
             </a>
-            <a href="{% url 'profile' %}" class="btn btn-primary" title="Profile">
+            <a href="{% url 'profile' %}" class="btn btn-primary" title="Profile" aria-label="Profile">
                 <i data-lucide="user"></i> <span class="nav-btn-text">Profile</span>
             </a>
-            <a href="{% url 'settings' %}" class="btn btn-secondary" title="Settings">
+            <a href="{% url 'settings' %}" class="btn btn-secondary" title="Settings" aria-label="Settings">
                 <i data-lucide="settings"></i> <span class="nav-btn-text">Settings</span>
             </a>
-            <a href="{% url 'logout' %}" class="btn btn-secondary" style="color: var(--button-danger); border-color: rgba(239, 68, 68, 0.2);" title="Log Out">
+            <a href="{% url 'logout' %}" class="btn btn-secondary" style="color: var(--button-danger); border-color: rgba(239, 68, 68, 0.2);" title="Log Out" aria-label="Log Out">
                 <i data-lucide="log-out" style="color: var(--button-danger);"></i> <span class="nav-btn-text">Log Out</span>
             </a>
         </div>
